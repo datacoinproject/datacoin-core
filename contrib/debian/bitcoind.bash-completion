@@ -1,0 +1,2 @@
+contrib/bitcoind.bash-completion	datacoind
+contrib/bitcoin-cli.bash-completion	datacoin-cli

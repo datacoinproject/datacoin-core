@@ -1,0 +1,96 @@
+********* Start testing of URITests *********
+Config: Using QtTest library 5.5.1, Qt 5.5.1 (x86_64-little_endian-lp64 shared (dynamic) release build; by GCC 5.4.0 20160609)
+PASS   : URITests::initTestCase()
+PASS   : URITests::uriTests()
+PASS   : URITests::cleanupTestCase()
+Totals: 3 passed, 0 failed, 0 skipped, 0 blacklisted
+********* Finished testing of URITests *********
+********* Start testing of PaymentServerTests *********
+Config: Using QtTest library 5.5.1, Qt 5.5.1 (x86_64-little_endian-lp64 shared (dynamic) release build; by GCC 5.4.0 20160609)
+PASS   : PaymentServerTests::initTestCase()
+QDEBUG : PaymentServerTests::paymentServerTests() PaymentServer::initNetManager: No active proxy server found.
+QDEBUG : PaymentServerTests::paymentServerTests() PaymentServer::processPaymentRequest: Secure payment request from  "testmerchant.org"
+QWARN  : PaymentServerTests::paymentServerTests() PaymentRequestPlus::getMerchant: Payment request: certificate expired or not yet active:  QSslCertificate("3", "03", "LxHILx+N3qwVoAcCmQ5cyw==", (), ("Expired Test Merchant"), QMap(), QDateTime(2013-02-23 21:26:43.000 UTC Qt::TimeSpec(UTC)), QDateTime(2013-02-24 21:26:43.000 UTC Qt::TimeSpec(UTC)))
+QDEBUG : PaymentServerTests::paymentServerTests() PaymentServer::processPaymentRequest: Insecure payment request to  "DJkvsVmdCTtpeTG1ChQuQ3Q1A8mMbKdAaL"
+QWARN  : PaymentServerTests::paymentServerTests() PaymentRequestPlus::getMerchant: Payment request: certificate expired or not yet active:  QSslCertificate("3", "03", "LxHILx+N3qwVoAcCmQ5cyw==", (), ("Expired Test Merchant"), QMap(), QDateTime(2013-02-23 21:26:43.000 UTC Qt::TimeSpec(UTC)), QDateTime(2013-02-24 21:26:43.000 UTC Qt::TimeSpec(UTC)))
+QDEBUG : PaymentServerTests::paymentServerTests() PaymentServer::processPaymentRequest: Secure payment request from  "testmerchant8.org"
+QWARN  : PaymentServerTests::paymentServerTests() PaymentRequestPlus::getMerchant: Payment request: certificate expired or not yet active:  QSslCertificate("3", "06", "MiZaQ+g9lSHZGuHWkXZG+g==", (), ("Payment Request Intermediate 5"), QMap(), QDateTime(2013-02-23 22:59:51.000 UTC Qt::TimeSpec(UTC)), QDateTime(2013-02-24 22:59:51.000 UTC Qt::TimeSpec(UTC)))
+QDEBUG : PaymentServerTests::paymentServerTests() PaymentServer::processPaymentRequest: Insecure payment request to  "DJkvsVmdCTtpeTG1ChQuQ3Q1A8mMbKdAaL"
+QWARN  : PaymentServerTests::paymentServerTests() PaymentRequestPlus::getMerchant: Payment request: certificate expired or not yet active:  QSslCertificate("3", "06", "MiZaQ+g9lSHZGuHWkXZG+g==", (), ("Payment Request Intermediate 5"), QMap(), QDateTime(2013-02-23 22:59:51.000 UTC Qt::TimeSpec(UTC)), QDateTime(2013-02-24 22:59:51.000 UTC Qt::TimeSpec(UTC)))
+QWARN  : PaymentServerTests::paymentServerTests() PaymentRequestPlus::getMerchant: SSL error:  certificate signature failure
+QDEBUG : PaymentServerTests::paymentServerTests() PaymentServer::processPaymentRequest: Insecure payment request to  "DJkvsVmdCTtpeTG1ChQuQ3Q1A8mMbKdAaL"
+QWARN  : PaymentServerTests::paymentServerTests() PaymentRequestPlus::getMerchant: SSL error:  certificate signature failure
+QWARN  : PaymentServerTests::paymentServerTests() PaymentRequestPlus::getMerchant: SSL error:  unable to get local issuer certificate
+QDEBUG : PaymentServerTests::paymentServerTests() PaymentServer::processPaymentRequest: Insecure payment request to  "DJkvsVmdCTtpeTG1ChQuQ3Q1A8mMbKdAaL"
+QWARN  : PaymentServerTests::paymentServerTests() PaymentRequestPlus::getMerchant: SSL error:  unable to get local issuer certificate
+QWARN  : PaymentServerTests::paymentServerTests() "PaymentServer::verifyNetwork: Payment request network \"test\" doesn't match client network \"main\"."
+QWARN  : PaymentServerTests::paymentServerTests() "PaymentServer::verifyExpired: Payment request expired \"1970-01-01 00:00:01\"."
+QWARN  : PaymentServerTests::paymentServerTests() "PaymentServer::verifyExpired: Payment request expired \"1970-01-01 00:00:00\"."
+QWARN  : PaymentServerTests::paymentServerTests() "PaymentServer::verifySize: Payment request too large (50001 bytes, allowed 50000 bytes)."
+QWARN  : PaymentServerTests::paymentServerTests() "PaymentServer::verifyAmount: Payment request amount out of allowed range (210000010000000000, allowed 0 - 200000000000000000)."
+PASS   : PaymentServerTests::paymentServerTests()
+PASS   : PaymentServerTests::cleanupTestCase()
+Totals: 3 passed, 0 failed, 0 skipped, 0 blacklisted
+********* Finished testing of PaymentServerTests *********
+********* Start testing of RPCNestedTests *********
+Config: Using QtTest library 5.5.1, Qt 5.5.1 (x86_64-little_endian-lp64 shared (dynamic) release build; by GCC 5.4.0 20160609)
+PASS   : RPCNestedTests::initTestCase()
+PASS   : RPCNestedTests::rpcNestedTests()
+PASS   : RPCNestedTests::cleanupTestCase()
+Totals: 3 passed, 0 failed, 0 skipped, 0 blacklisted
+********* Finished testing of RPCNestedTests *********
+********* Start testing of CompatTests *********
+Config: Using QtTest library 5.5.1, Qt 5.5.1 (x86_64-little_endian-lp64 shared (dynamic) release build; by GCC 5.4.0 20160609)
+PASS   : CompatTests::initTestCase()
+PASS   : CompatTests::bswapTests()
+PASS   : CompatTests::cleanupTestCase()
+Totals: 3 passed, 0 failed, 0 skipped, 0 blacklisted
+********* Finished testing of CompatTests *********
+********* Start testing of WalletTests *********
+Config: Using QtTest library 5.5.1, Qt 5.5.1 (x86_64-little_endian-lp64 shared (dynamic) release build; by GCC 5.4.0 20160609)
+PASS   : WalletTests::initTestCase()
+QDEBUG : WalletTests::walletTests() TransactionTablePriv::refreshWallet
+QWARN  : WalletTests::walletTests() This plugin does not support propagateSizeHints()
+QDEBUG : WalletTests::walletTests() "NotifyTransactionChanged: 92cf2137394fff269d799a3563e1e79e21727f61358761f26a0022d04ada35a0 status= 0"
+QDEBUG : WalletTests::walletTests() "NotifyTransactionChanged: 8fa5dd6a8141da12e539d3a225701ce92bc30d45f9c669b3009e73137ef0daa0 status= 1"
+QDEBUG : WalletTests::walletTests() "NotifyAddressBookChanged: VAfDvbsAhdSLFLm4iNKJwn454K32pQL4Ne  isMine=0 purpose=send status=0"
+QDEBUG : WalletTests::walletTests() "TransactionTablePriv::updateWallet: 92cf2137394fff269d799a3563e1e79e21727f61358761f26a0022d04ada35a0 0"
+QDEBUG : WalletTests::walletTests() "    inModel=0 Index=1987-1987 showTransaction=1 derivedStatus=0"
+QDEBUG : WalletTests::walletTests() "TransactionTablePriv::updateWallet: 8fa5dd6a8141da12e539d3a225701ce92bc30d45f9c669b3009e73137ef0daa0 1"
+QDEBUG : WalletTests::walletTests() "    inModel=1 Index=1997-1998 showTransaction=1 derivedStatus=1"
+QWARN  : WalletTests::walletTests() This plugin does not support propagateSizeHints()
+QDEBUG : WalletTests::walletTests() "NotifyTransactionChanged: be68249aaeb148af8eb49a530c0189503f96fd73ea250268346f56dece669e80 status= 0"
+QDEBUG : WalletTests::walletTests() "NotifyTransactionChanged: 13a98a1c5a9580b1bd182f46751f2a14d3312101eb6748c92ca9fe51e5dcdcad status= 1"
+QDEBUG : WalletTests::walletTests() "TransactionTablePriv::updateWallet: be68249aaeb148af8eb49a530c0189503f96fd73ea250268346f56dece669e80 0"
+QDEBUG : WalletTests::walletTests() "    inModel=0 Index=1556-1556 showTransaction=1 derivedStatus=0"
+QDEBUG : WalletTests::walletTests() "TransactionTablePriv::updateWallet: 13a98a1c5a9580b1bd182f46751f2a14d3312101eb6748c92ca9fe51e5dcdcad 1"
+QDEBUG : WalletTests::walletTests() "    inModel=1 Index=2162-2163 showTransaction=1 derivedStatus=1"
+QWARN  : WalletTests::walletTests() This plugin does not support raise()
+QWARN  : WalletTests::walletTests() This plugin does not support grabbing the keyboard
+QWARN  : WalletTests::walletTests() This plugin does not support propagateSizeHints()
+QWARN  : WalletTests::walletTests() This plugin does not support raise()
+QWARN  : WalletTests::walletTests() This plugin does not support grabbing the keyboard
+QWARN  : WalletTests::walletTests() This plugin does not support propagateSizeHints()
+QWARN  : WalletTests::walletTests() This plugin does not support raise()
+QWARN  : WalletTests::walletTests() This plugin does not support grabbing the keyboard
+QWARN  : WalletTests::walletTests() This plugin does not support propagateSizeHints()
+QDEBUG : WalletTests::walletTests() "NotifyTransactionChanged: a5706006d2657e39f3dda25f56eaace9a2bed9002bd621388026490c71a927a9 status= 0"
+QDEBUG : WalletTests::walletTests() "NotifyTransactionChanged: 13a98a1c5a9580b1bd182f46751f2a14d3312101eb6748c92ca9fe51e5dcdcad status= 1"
+QDEBUG : WalletTests::walletTests() "NotifyTransactionChanged: be68249aaeb148af8eb49a530c0189503f96fd73ea250268346f56dece669e80 status= 1"
+QDEBUG : WalletTests::walletTests() "TransactionTablePriv::updateWallet: be68249aaeb148af8eb49a530c0189503f96fd73ea250268346f56dece669e80 1"
+QDEBUG : WalletTests::walletTests() "    inModel=1 Index=1556-1557 showTransaction=1 derivedStatus=1"
+QWARN  : WalletTests::walletTests() This plugin does not support raise()
+QWARN  : WalletTests::walletTests() This plugin does not support grabbing the keyboard
+QWARN  : WalletTests::walletTests() This plugin does not support propagateSizeHints()
+QDEBUG : WalletTests::walletTests() "TransactionTablePriv::updateWallet: a5706006d2657e39f3dda25f56eaace9a2bed9002bd621388026490c71a927a9 0"
+QDEBUG : WalletTests::walletTests() "    inModel=0 Index=2108-2108 showTransaction=1 derivedStatus=0"
+QDEBUG : WalletTests::walletTests() "TransactionTablePriv::updateWallet: 13a98a1c5a9580b1bd182f46751f2a14d3312101eb6748c92ca9fe51e5dcdcad 1"
+QDEBUG : WalletTests::walletTests() "    inModel=1 Index=2163-2164 showTransaction=1 derivedStatus=1"
+QDEBUG : WalletTests::walletTests() "TransactionTablePriv::updateWallet: be68249aaeb148af8eb49a530c0189503f96fd73ea250268346f56dece669e80 1"
+QDEBUG : WalletTests::walletTests() "    inModel=1 Index=1556-1557 showTransaction=1 derivedStatus=1"
+QDEBUG : WalletTests::walletTests() "NotifyAddressBookChanged: VRFuzqqoPC1EBz3afiqZVqtvQPpfSomRBG TEST_LABEL_1 isMine=1 purpose=receive status=0"
+QWARN  : WalletTests::walletTests() This plugin does not support propagateSizeHints()
+PASS   : WalletTests::walletTests()
+PASS   : WalletTests::cleanupTestCase()
+Totals: 3 passed, 0 failed, 0 skipped, 0 blacklisted
+********* Finished testing of WalletTests *********
