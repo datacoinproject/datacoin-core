@@ -26,7 +26,7 @@
 #include "utilstrencodings.h"
 #include "validationinterface.h"
 #include "warnings.h"
-#include "prime.h"
+#include "prime/prime.h"
 
 #include <memory>
 #include <stdint.h>

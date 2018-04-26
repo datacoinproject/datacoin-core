@@ -8,7 +8,7 @@
 #include "consensus/validation.h"
 #include "validation.h"
 #include "pow.h"
-#include "prime.h"
+#include "prime/prime.h"
 
 #include "tinyformat.h"
 #include "util.h"
@@ -18,7 +18,7 @@
 
 #include "chainparamsseeds.h"
 
-static CBlock CreateGenesisBlock(const char* pszStartTopic, const CScript& genesisOutputScript, uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, uint64_t bnPrimeChainMultiplier, const CAmount& genesisReward)
+static CBlock CreateGenesisBlock(const char* pszStartTopic, const CScript& genesisOutputScript, uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, CBigNum bnPrimeChainMultiplier, const CAmount& genesisReward)
 {
     CMutableTransaction txNew;
     txNew.nVersion = 1;
@@ -52,7 +52,7 @@ static CBlock CreateGenesisBlock(const char* pszStartTopic, const CScript& genes
  *     CTxOut(nValue=50.00000000, scriptPubKey=0x5F1DF16B2B704C8A578D0B)
  *   vMerkleTree: 4a5e1e
  */
-static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, uint64_t bnPrimeChainMultiplier, const CAmount& genesisReward)
+static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, CBigNum bnPrimeChainMultiplier, const CAmount& genesisReward)
 {
     const char* pszStartTopic = "https://bitcointalk.org/index.php?topic=325735.0";
     const CScript genesisOutputScript = CScript();
@@ -108,8 +108,8 @@ public:
 
         // The best chain should have at least this much work.
         //consensus.nMinimumChainWork = uint256S("0x000000000000000000000000000000000000000000723d3581fe1bd55373540a");
-		//TODO: DATACOIN. Минимальная работа активной цепи. Вообще пересмртреть работу рассчитываемую как сумма работы блоков в DTC!!!
-		consensus.nMinimumChainWork = uint256S("0x00");
+		//TODO: DATACOIN. Минимальная работа активной цепи. Вообще пересмотреть работу рассчитываемую как сумма работы блоков в DTC!!!
+		consensus.nMinimumChainWork = uint256S("0x00000000000000000000000000000000000000000000000000001c8b34115f40");
 
         // By default assume that the signatures in ancestors of this block are valid.
         consensus.defaultAssumeValid = uint256S("0x0000000000000000003b9ce759c2a087d52abc4266f8f4ebd6d768b89defa50a"); //477890
@@ -156,6 +156,7 @@ public:
         fRequireStandard = true;
         fMineBlocksOnDemand = false;
 
+		//TODO: DATACOIN. Добавить чекпоинты
         checkpointData = (CCheckpointData) {
             {
 				{     0, consensus.hashGenesisBlock },
@@ -164,11 +165,13 @@ public:
         };
 
         chainTxData = ChainTxData{
-            // Data as of block 000000000000000000d97e53664d17967bd4ee50b23abb92e54a34eb222d15ae (height 478913).
-            1384627170, // * UNIX timestamp of last known number of transactions
-            1,          // * total number of transactions between genesis and that timestamp
+            // Data as of block 88bc99151b7809d9e5983c0f762181a0bc55b72702708a6b36fe672409622f05 (height 2388277).
+            1524657498, // * UNIX timestamp of last known number of transactions
+            2710257,          // * total number of transactions between genesis and that timestamp
+			126324797,  // * total data size
                         //   (the tx=... number in the SetBestChain debug.log lines)
-            3.1         // * estimated number of transactions per second after that timestamp
+            0.020,      // * estimated number of transactions per second after that timestamp
+			0.083       // * estimated data rate (bytes per sec)
         };
     }
 };
@@ -211,7 +214,7 @@ public:
         consensus.nMinimumChainWork = uint256S("0x00");
 
         // By default assume that the signatures in ancestors of this block are valid.
-        consensus.defaultAssumeValid = uint256S("0x0000000002e9e7b00e1f6dc5123a04aad68dd0f0968d8c7aa45f6640795c37b1"); //1135275
+        consensus.defaultAssumeValid = uint256S("0xdf7c16e1dee3a79f7de16bcbb586fe5a5fbb1be4a9630b9e4debc3ed1dd585eb"); //1135275
 
 		consensus.nTargetInitialLength = 4; // primecoin: initial prime chain target
         consensus.nTargetMinLength = 2;     // primecoin: minimum prime chain target
@@ -258,10 +261,12 @@ public:
         };
 
         chainTxData = ChainTxData{
-            // Data as of block 00000000000001c200b9790dc637d3bb141fe77d155b966ed775b17e109f7c6c (height 1156179)
-            1501802953,
-            14706531,
-            0.15
+            // Data as of block df7c16e1dee3a79f7de16bcbb586fe5a5fbb1be4a9630b9e4debc3ed1dd585eb (height 262670)
+            1524669645,
+            264360,
+			80726444,
+            0.020,
+			0.0001
         };
 
     }
@@ -337,7 +342,9 @@ public:
         chainTxData = ChainTxData{
             0,
             0,
-            0
+            0,
+			0,
+			0
         };
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,70);
@@ -373,12 +380,14 @@ void SelectParams(const std::string& network)
     SelectBaseParams(network);
     globalChainParams = CreateChainParams(network);
 
-	CValidationState state;
-	unsigned int tmpnChainType = 0, tmpnChainLength = 0;
-    assert(CheckBlock(Params().GenesisBlock(), state, Params().GetConsensus(), true, true));
-    assert(CheckProofOfWork(Params().GenesisBlock().GetHeaderHash(), Params().GenesisBlock().nBits,
-		Params().GetConsensus(), Params().GenesisBlock().bnPrimeChainMultiplier,
-		tmpnChainType, tmpnChainLength));
+	//TODO: DATACOIN. Биткоин тут ничего не проверяет. Датакоин релиз тоже.
+	//Вставка этой проверки дала нежелательную круговую зависимость библиотеки common от server
+	//CValidationState state;
+	//unsigned int tmpnChainType = 0, tmpnChainLength = 0;
+    //assert(CheckBlock(Params().GenesisBlock(), state, Params().GetConsensus(), true, true));
+    //assert(CheckProofOfWork(Params().GenesisBlock().GetHeaderHash(), Params().GenesisBlock().nBits,
+	//	Params().GetConsensus(), Params().GenesisBlock().bnPrimeChainMultiplier,
+	//	tmpnChainType, tmpnChainLength));
 
 }
 

@@ -4,7 +4,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "pow.h"
-#include "prime.h"
+#include "prime/prime.h"
 #include "util.h"
 
 #include "arith_uint256.h"
@@ -34,7 +34,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         return error("GetNextWorkRequired() : failed to get next target");
 
     if (fDebug && gArgs.GetBoolArg("-printtarget", false))
-        printf("GetNextWorkRequired() : lastindex=%u prev=0x%08x new=0x%08x\n",
+        LogPrintf("GetNextWorkRequired() : lastindex=%u prev=0x%08x new=0x%08x\n",
             pindexLast->nHeight, pindexPrev->nBits, nBits);
     return nBits;
 }

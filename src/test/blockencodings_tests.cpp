@@ -6,7 +6,7 @@
 #include "consensus/merkle.h"
 #include "chainparams.h"
 #include "random.h"
-#include "prime.h"
+#include "prime/prime.h"
 
 #include "test/test_bitcoin.h"
 
@@ -26,13 +26,13 @@ static CBlock BuildBlockTestCase() {
     tx.vin.resize(1);
     tx.vin[0].scriptSig.resize(10);
     tx.vout.resize(1);
-    tx.vout[0].nValue = 5 * CENT; //DATACOIN;
+    tx.vout[0].nValue = 5 * CENT; //DATACOIN CHANGED
 
     block.vtx.resize(3);
     block.vtx[0] = MakeTransactionRef(tx);
     block.nVersion = 42;
     block.hashPrevBlock = InsecureRand256();
-    block.nBits = TargetFromInt(1); // 0x207fffff; //DATACOIN
+    block.nBits = TargetFromInt(1); // 0x207fffff; //DATACOIN CHANGED
 	block.bnPrimeChainMultiplier = Params().GenesisBlock().bnPrimeChainMultiplier;//TODO: DATACOIN
 
     tx.vin[0].prevout.hash = InsecureRand256();
@@ -283,14 +283,14 @@ BOOST_AUTO_TEST_CASE(EmptyBlockRoundTripTest)
     coinbase.vin.resize(1);
     coinbase.vin[0].scriptSig.resize(10);
     coinbase.vout.resize(1);
-    coinbase.vout[0].nValue = 5 * CENT; //DATACOIN
+    coinbase.vout[0].nValue = 5 * CENT; //DATACOIN CHANGED
 
     CBlock block;
     block.vtx.resize(1);
     block.vtx[0] = MakeTransactionRef(std::move(coinbase));
     block.nVersion = 42;
     block.hashPrevBlock = InsecureRand256();
-    block.nBits = TargetFromInt(1); // 0x207fffff; //DATACOIN
+    block.nBits = TargetFromInt(1); // 0x207fffff; //DATACOIN CHANGED
 	block.bnPrimeChainMultiplier = Params().GenesisBlock().bnPrimeChainMultiplier;//TODO: DATACOIN
 
     bool mutated;

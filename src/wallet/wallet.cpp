@@ -3051,7 +3051,7 @@ std::string CWallet::SendData(CWalletTx& wtxNew, bool fAskFee, const std::string
     if (IsLocked())
     {
         std::string strError = _("Error: Wallet locked, unable to create transaction!");
-        printf("SendData() : %s", strError.c_str());
+        LogPrintf("SendData() : %s", strError.c_str());
         return strError;
     }
 
@@ -3064,14 +3064,14 @@ std::string CWallet::SendData(CWalletTx& wtxNew, bool fAskFee, const std::string
     {
         if (nFeeRequired > GetBalance())
             strError = strprintf(_("Error: This transaction requires a transaction fee of at least %s because of its amount, complexity, or use of recently received funds!"), FormatMoney(nFeeRequired).c_str());
-        printf("SendData() : %s\n", strError.c_str());
+        LogPrintf("SendData() : %s\n", strError.c_str());
 		
 		if (fAskFee) uiInterface.ThreadSafeMessageBox(strError, "", CClientUIInterface::MSG_WARNING);
 		
         return strError;
     }
 
-    printf("SendData(): nFeeRequired = %f\n", double(nFeeRequired) / COIN );
+    LogPrintf("SendData(): nFeeRequired = %f\n", double(nFeeRequired) / COIN );
 
 	CValidationState state;
     if (!CommitTransaction(wtxNew, reservekey, g_connman.get(), state))

@@ -169,7 +169,7 @@
     </message>
     <message>
         <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR DATACOINS&lt;/b&gt;!</source>
-        <translation>ВНИМАНИЕ: Ако шифрирате вашият портфейл и изгубите паролата си, &lt;b&gt;ЩЕ ИЗГУБИТЕ ВСИЧКИТЕ СИ БИТКОИНИ&lt;/b&gt;!</translation>
+        <translation>ВНИМАНИЕ: Ако шифрирате вашият портфейл и изгубите паролата си, &lt;b&gt;ЩЕ ИЗГУБИТЕ ВСИЧКИТЕ СИ DTC&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -331,7 +331,7 @@
     </message>
     <message>
         <source>Send coins to a Datacoin address</source>
-        <translation>Изпращане към Биткоин адрес</translation>
+        <translation>Изпращане към DTC адрес</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -355,7 +355,7 @@
     </message>
     <message>
         <source>Datacoin</source>
-        <translation>Биткоин</translation>
+        <translation>Datacoin</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -707,7 +707,7 @@
     </message>
     <message>
         <source>The entered address "%1" is not a valid Datacoin address.</source>
-        <translation>"%1" не е валиден Биткоин адрес.</translation>
+        <translation>"%1" не е валиден Datacoin адрес.</translation>
     </message>
     <message>
         <source>The entered address "%1" is already in the address book.</source>
@@ -1032,7 +1032,7 @@
     </message>
     <message>
         <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Datacoin network after a connection is established, but this process has not completed yet.</source>
-        <translation>Текущата информация на екрана може да не е актуална. Вашият портфейл ще се синхронизира автоматично с мрежата на Биткоин, щом поне една връзката с нея се установи; този процес все още не е приключил.</translation>
+        <translation>Текущата информация на екрана може да не е актуална. Вашият портфейл ще се синхронизира автоматично с мрежата на Datacoin, щом поне една връзката с нея се установи; този процес все още не е приключил.</translation>
     </message>
     <message>
         <source>Watch-only:</source>
@@ -1850,7 +1850,7 @@
     </message>
     <message>
         <source>Verify the message to ensure it was signed with the specified Datacoin address</source>
-        <translation>Проверете съобщение, за да сте сигурни че е подписано с определен Биткоин адрес</translation>
+        <translation>Проверете съобщение, за да сте сигурни че е подписано с определен Datacoin адрес</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>

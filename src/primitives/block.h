@@ -9,7 +9,7 @@
 #include "primitives/transaction.h"
 #include "serialize.h"
 #include "uint256.h"
-#include "bignum.h"
+#include "prime/bignum.h"
 #include "hash.h"
 
 /** Nodes collect new transactions into a block, hash them into a hash tree,
@@ -72,9 +72,19 @@ public:
     }
 
     // Primecoin: header hash does not include prime certificate
+	// Данный хеш используется для проверки POW. Включать в хэш bnPrimeChainMultiplier нельзя
     uint256 GetHeaderHash() const
     {
-        return Hash(BEGIN(nVersion), END(nNonce));
+		//TODO: DATACOIN. Переделываем хеширование
+		//return Hash(BEGIN(nVersion), END(nNonce));
+		
+		//CDataStream ss(SER_GETHASH, 0);
+        //ss << nVersion << hashPrevBlock << hashMerkleRoot << nTime << nBits << nNonce;
+        //return Hash(ss.begin(), ss.end());
+		
+		CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
+		ss << nVersion << hashPrevBlock << hashMerkleRoot << nTime << nBits << nNonce;
+		return ss.GetHash();
     }
 
 	uint256 GetHash() const;

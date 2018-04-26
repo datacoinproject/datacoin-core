@@ -386,7 +386,7 @@ BOOST_FIXTURE_TEST_CASE(rescan, TestChain100Setup)
         CWallet wallet;
         AddKey(wallet, coinbaseKey);
         BOOST_CHECK_EQUAL(nullBlock, wallet.ScanForWalletTransactions(oldTip, nullptr));
-        BOOST_CHECK_EQUAL(wallet.GetImmatureBalance(), 92484000000); //DATACOIN
+        BOOST_CHECK_EQUAL(wallet.GetImmatureBalance(), 92484000000); //DATACOIN CHANGED
     }
 	
     // Prune the older block file.
@@ -399,7 +399,7 @@ BOOST_FIXTURE_TEST_CASE(rescan, TestChain100Setup)
         CWallet wallet;
         AddKey(wallet, coinbaseKey);
         BOOST_CHECK_EQUAL(oldTip, wallet.ScanForWalletTransactions(oldTip, nullptr));
-        BOOST_CHECK_EQUAL(wallet.GetImmatureBalance(), 46239000000); //DATACOIN
+        BOOST_CHECK_EQUAL(wallet.GetImmatureBalance(), 46239000000); //DATACOIN CHANGED
     }
 
     // Verify importmulti RPC returns failure for a key whose creation time is

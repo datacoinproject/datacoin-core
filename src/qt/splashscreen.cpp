@@ -27,7 +27,7 @@
 #include <QRadialGradient>
 
 SplashScreen::SplashScreen(Qt::WindowFlags f, const NetworkStyle *networkStyle) :
-    QWidget(0, Qt::SplashScreen), curAlignment(0) //DATACOIN. ignore flags. make Qt::SplashScreen
+    QWidget(0, Qt::SplashScreen), curAlignment(0) //DATACOIN CHANGED. ignore flags. make Qt::SplashScreen
 {
     // set reference point, paddings
     int paddingRight            = 50;

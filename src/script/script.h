@@ -9,7 +9,7 @@
 #include "crypto/common.h"
 #include "prevector.h"
 #include "serialize.h"
-#include "bignum.h"
+#include "prime/bignum.h"
 
 #include <assert.h>
 #include <climits>

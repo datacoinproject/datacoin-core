@@ -26,7 +26,7 @@
 #include "util.h"
 #include "utilmoneystr.h"
 #include "validationinterface.h"
-#include "prime.h"
+#include "prime/prime.h"
 
 #include <algorithm>
 #include <queue>
@@ -182,7 +182,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
 
 	
 	if (fDebug && gArgs.GetBoolArg("-printmining", false))
-        printf("BlockAssembler::CreateNewBlock()\n");//: total size %u\n", nBlockSize);
+        LogPrintf("BlockAssembler::CreateNewBlock()\n");//: total size %u\n", nBlockSize);
 
     pblock->vtx[0] = MakeTransactionRef(std::move(coinbaseTx));
 		
@@ -491,10 +491,10 @@ bool CheckWork(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey)
         return error("DatacoinMiner : failed proof-of-work check");
 
     //// debug print
-    printf("DatacoinMiner:\n");
-    printf("proof-of-work found  \n  target: %s\n  multiplier: %s\n  ", TargetToString(pblock->nBits).c_str(), pblock->bnPrimeChainMultiplier.GetHex().c_str());
-    printf("%s", pblock->ToString().c_str());
-    printf("generated %s\n", FormatMoney(pblock->vtx[0]->vout[0].nValue).c_str());
+    LogPrintf("DatacoinMiner:\n");
+    LogPrintf("proof-of-work found  \n  target: %s\n  multiplier: %s\n  ", TargetToString(pblock->nBits).c_str(), pblock->bnPrimeChainMultiplier.GetHex().c_str());
+    LogPrintf("%s", pblock->ToString().c_str());
+    LogPrintf("generated %s\n", FormatMoney(pblock->vtx[0]->vout[0].nValue).c_str());
 
     // Found a solution
     {
@@ -526,7 +526,7 @@ void static BitcoinMiner(CWallet *pwallet)
     static CCriticalSection cs;
     static bool fTimerStarted = false;
     bool fPrintStatsAtEnd = false;
-    printf("DatacoinMiner started\n");
+    LogPrintf("DatacoinMiner started\n");
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
     RenameThread("datacoin-miner");
 
@@ -585,7 +585,7 @@ void static BitcoinMiner(CWallet *pwallet)
     nExtraNonce = ns_now.count() % nExtraNonceModulo;
 
     // Print the chosen extra nonce for debugging
-    printf("BitcoinMiner() : Setting initial extra nonce to %u\n", nExtraNonce);
+    LogPrintf("BitcoinMiner() : Setting initial extra nonce to %u\n", nExtraNonce);
 
     try { while(true) {
         while (g_connman->GetNodeCount(CConnman::CONNECTIONS_ALL)==0)  MilliSleep(1000);
@@ -610,7 +610,7 @@ void static BitcoinMiner(CWallet *pwallet)
         IncrementExtraNonce(pblock, pindexPrev, nExtraNonce, true);
 
         if (fDebug && gArgs.GetBoolArg("-printmining", false))
-            printf("Running DatacoinMiner with %u transactions in block (%u bytes)\n", static_cast<unsigned int>(pblock->vtx.size()),
+            LogPrintf("Running DatacoinMiner with %u transactions in block (%u bytes)\n", static_cast<unsigned int>(pblock->vtx.size()),
                static_cast<unsigned int>(::GetSerializeSize(*pblock, SER_NETWORK, PROTOCOL_VERSION)));
 
         //
@@ -750,9 +750,9 @@ void static BitcoinMiner(CWallet *pwallet)
                     {
                         nLogTime = nMillisNow;
                         if (fLogTimestamps)
-                            printf("primemeter %9.0f prime/h %9.0f test/h %3.8f chain/d %3.8f block/d\n", dPrimesPerMinute * 60.0, dTestsPerMinute * 60.0, dChainsPerDay, dBlocksPerDay);
+                            LogPrintf("primemeter %9.0f prime/h %9.0f test/h %3.8f chain/d %3.8f block/d\n", dPrimesPerMinute * 60.0, dTestsPerMinute * 60.0, dChainsPerDay, dBlocksPerDay);
                         else
-                            printf("%s primemeter %9.0f prime/h %9.0f test/h %3.8f chain/d %3.8f block/d\n", DateTimeStrFormat("%Y-%m-%d %H:%M:%S", nLogTime / 1000).c_str(), dPrimesPerMinute * 60.0, dTestsPerMinute * 60.0, dChainsPerDay, dBlocksPerDay);
+                            LogPrintf("%s primemeter %9.0f prime/h %9.0f test/h %3.8f chain/d %3.8f block/d\n", DateTimeStrFormat("%Y-%m-%d %H:%M:%S", nLogTime / 1000).c_str(), dPrimesPerMinute * 60.0, dTestsPerMinute * 60.0, dChainsPerDay, dBlocksPerDay);
                         PrintCompactStatistics(vFoundChainCounter);
                     }
                 }
@@ -821,7 +821,7 @@ void static BitcoinMiner(CWallet *pwallet)
                     else
                         nAdjustPrimorial = (nPrimorialMultiplier >= nPrimorialMultiplierPrev) ? -1 : 1;
                     if (fDebug && gArgs.GetBoolArg("-printprimorial", false))
-                        printf("DatacoinMiner() : Rounds total: num=%u primorial=%u block/s=%3.12f\n", nRoundNum, nPrimorialMultiplier, dAverageBlockExpected);
+                        LogPrintf("DatacoinMiner() : Rounds total: num=%u primorial=%u block/s=%3.12f\n", nRoundNum, nPrimorialMultiplier, dAverageBlockExpected);
                     // Store the new value and reset
                     dAverageBlockExpectedPrev = dAverageBlockExpected;
                     nPrimorialMultiplierPrev = nPrimorialMultiplier;
@@ -833,7 +833,7 @@ void static BitcoinMiner(CWallet *pwallet)
                 {
                     double dPrimeProbabilityBegin = EstimateCandidatePrimeProbability(nPrimorialMultiplier, 0, nMiningProtocol);
                     double dPrimeProbabilityEnd = EstimateCandidatePrimeProbability(nPrimorialMultiplier, nTargetLength - 1, nMiningProtocol);
-                    printf("DatacoinMiner() : Round primorial=%u tests=%u primes=%u time=%uus pprob=%1.6f pprob2=%1.6f pprobextra=%1.6f tochain=%6.3fd expect=%3.12f expectblock=%3.12f\n", nPrimorialMultiplier, nRoundTests, nRoundPrimesHit, (unsigned int) nRoundTime, dPrimeProbabilityBegin, dPrimeProbabilityEnd, dExtraPrimeProbability, ((dTimeExpected/1000000.0))/86400.0, dRoundChainExpected, dRoundBlockExpected);
+                    LogPrintf("DatacoinMiner() : Round primorial=%u tests=%u primes=%u time=%uus pprob=%1.6f pprob2=%1.6f pprobextra=%1.6f tochain=%6.3fd expect=%3.12f expectblock=%3.12f\n", nPrimorialMultiplier, nRoundTests, nRoundPrimesHit, (unsigned int) nRoundTime, dPrimeProbabilityBegin, dPrimeProbabilityEnd, dExtraPrimeProbability, ((dTimeExpected/1000000.0))/86400.0, dRoundChainExpected, dRoundBlockExpected);
                 }
 
                 // Primecoin: primorial always needs to be incremented if only 0 primes were found
@@ -896,7 +896,7 @@ void static BitcoinMiner(CWallet *pwallet)
     } }
     catch (boost::thread_interrupted)
     {
-        printf("DatacoinMiner terminated\n");
+        LogPrintf("DatacoinMiner terminated\n");
         // Print statistics
         if (fPrintStatsAtEnd)
         {

@@ -52,7 +52,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <memory>
-#include "checkpointsync.h"
+//#include "prime/checkpointsync.h" //DATACOIN CHECKPOINTSYNC
 #include "util.h"
 
 #ifndef WIN32
@@ -1081,11 +1081,12 @@ bool AppInitParameterInteraction()
         dustRelayFee = CFeeRate(n);
     }
 
-    if (gArgs.IsArgSet("-checkpointkey")) // ppcoin: checkpoint master priv key
-    {
-        if (!SetCheckpointPrivKey(gArgs.GetArg("-checkpointkey", "")))
-            return InitError(_("Unable to sign checkpoint, wrong checkpointkey?"));
-    }
+//DATACOIN CHECKPOINTSYNC	
+//    if (gArgs.IsArgSet("-checkpointkey")) // ppcoin: checkpoint master priv key
+//    {
+//        if (!SetCheckpointPrivKey(gArgs.GetArg("-checkpointkey", "")))
+//            return InitError(_("Unable to sign checkpoint, wrong checkpointkey?"));
+//    }
 
 
     fRequireStandard = !gArgs.GetBoolArg("-acceptnonstdtxn", !chainparams.RequireStandard());

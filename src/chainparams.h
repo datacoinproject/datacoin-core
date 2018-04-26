@@ -34,7 +34,9 @@ struct CCheckpointData {
 struct ChainTxData {
     int64_t nTime;
     int64_t nTxCount;
+	int64_t nDataSize;
     double dTxRate;
+	double dDataRate;
 };
 
 /**

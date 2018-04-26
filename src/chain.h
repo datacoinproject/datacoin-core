@@ -207,6 +207,9 @@ public:
     //! This value will be non-zero only if and only if transactions for this block and all its parents are available.
     //! Change to 64-bit type when necessary; won't happen before 2030
     unsigned int nChainTx;
+	
+	unsigned int nDataSize; //DATACOIN ADDED
+	unsigned long long int nChainDataSize;
 
     //! Verification status of this block. See enum BlockStatus
     uint32_t nStatus;
@@ -217,6 +220,7 @@ public:
     uint32_t nTime;
     uint32_t nBits;
     uint32_t nNonce;
+	CBigNum bnPrimeChainMultiplier; //DATACOIN ADDED
 
     //! (memory only) Sequential id assigned to distinguish order in which blocks are received.
     int32_t nSequenceId;
@@ -240,6 +244,8 @@ public:
         nMoneySupply = 0;
         nTx = 0;
         nChainTx = 0;
+		nDataSize = 0; //DATACOIN ADDED
+		nChainDataSize = 0;
         nStatus = 0;
         nSequenceId = 0;
         nTimeMax = 0;
@@ -249,6 +255,7 @@ public:
         nTime          = 0;
         nBits          = 0;
         nNonce         = 0;
+		bnPrimeChainMultiplier = 0;
     }
 
     CBlockIndex()
@@ -265,6 +272,7 @@ public:
         nTime          = block.nTime;
         nBits          = block.nBits;
         nNonce         = block.nNonce;
+		bnPrimeChainMultiplier = block.bnPrimeChainMultiplier;
     }
 
     CDiskBlockPos GetBlockPos() const {
@@ -306,6 +314,43 @@ public:
         return block;
     }
 
+	CBlockHeader GetFullBlockHeader() const //TODO: DATACOIN было GetBlockHeader
+    {
+        CBlockHeader block;
+        block.nVersion       = nVersion;
+        if (pprev)
+            block.hashPrevBlock = pprev->GetBlockHash();
+        block.hashMerkleRoot = hashMerkleRoot;
+        block.nTime          = nTime;
+        block.nBits          = nBits;
+        block.nNonce         = nNonce;
+		block.bnPrimeChainMultiplier = bnPrimeChainMultiplier;
+		//TODO: DATACOIN. !!! XPM CBlockIndex не содержит bnPrimeChainMultiplier.
+		//block.bnPrimeChainMultiplier = bnPrimeChainMultiplier; 
+		//Вследствие по сети в HEADERS отправляется тоже пустое поле и приемник 
+		//net_processing.cpp NetMsgType::GETHEADERS 
+		//не может на месте проверить консистентность хэшей.
+		//Желательно исправить.
+		//так же смотри CBlock::GetBlockHeader()
+		
+        return block;
+    }
+
+	uint256 GetHeaderHash() const //DATACOIN ADDED
+    {
+		//TODO: DATACOIN. Переделываем хеширование
+	
+		//CDataStream ss(SER_GETHASH, 0);
+        //ss << nVersion << hashPrevBlock << hashMerkleRoot << nTime << nBits << nNonce;
+        //return Hash(ss.begin(), ss.end());
+		
+		if (!pprev) return 0;
+		
+		CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
+		ss << nVersion << pprev->GetBlockHash() << hashMerkleRoot << nTime << nBits << nNonce;
+		return ss.GetHash();
+    }
+	
     uint256 GetBlockHash() const
     {
         return *phashBlock;
@@ -417,6 +462,7 @@ public:
 		READWRITE(VARINT(nHeight));
         READWRITE(VARINT(nStatus));
         READWRITE(VARINT(nTx));
+		READWRITE(VARINT(nDataSize)); //DATACOIN ADDED
         if (nStatus & (BLOCK_HAVE_DATA | BLOCK_HAVE_UNDO))
             READWRITE(VARINT(nFile));
         if (nStatus & BLOCK_HAVE_DATA)
@@ -431,6 +477,7 @@ public:
         READWRITE(nTime);
         READWRITE(nBits);
         READWRITE(nNonce);
+		READWRITE(bnPrimeChainMultiplier);
 		READWRITE(hashBlock);
     }
 

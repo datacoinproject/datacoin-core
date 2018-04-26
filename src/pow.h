@@ -7,7 +7,7 @@
 #define BITCOIN_POW_H
 
 #include "consensus/params.h"
-#include "bignum.h"
+#include "prime/bignum.h"
 
 #include <stdint.h>
 

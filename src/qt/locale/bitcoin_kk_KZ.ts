@@ -71,7 +71,7 @@
     </message>
     <message>
         <source>Datacoin</source>
-        <translation>Биткоин</translation>
+        <translation>Datacoin</translation>
     </message>
     <message>
         <source>Wallet</source>

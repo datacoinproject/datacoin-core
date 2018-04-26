@@ -4,7 +4,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "chain.h"
-#include "prime.h"
+#include "prime/prime.h"
 
 /**
  * CChain implementation
@@ -118,6 +118,7 @@ void CBlockIndex::BuildSkip()
         pskip = pprev->GetAncestor(GetSkipHeight(nHeight));
 }
 
+// Get block work value for main chain protocol
 arith_uint256 GetBlockProof(const CBlockIndex& block)
 {
 //    arith_uint256 bnTarget;
@@ -132,7 +133,25 @@ arith_uint256 GetBlockProof(const CBlockIndex& block)
 //    // or ~bnTarget / (bnTarget+1) + 1.
 //    return (~bnTarget / (bnTarget + 1)) + 1;
 	//TODO: DATACOIN. 
-	return TargetGetLength(block.nBits)+1;
+	//return TargetGetLength(block.nBits)+1;
+	    // Primecoin: 
+    // Difficulty multiplier of extra prime is estimated by nWorkTransitionRatio
+    // Difficulty multiplier of fractional is estimated by
+    //   r = 1/TransitionRatio
+    //   length >= n discovery rate = 1
+    //   length > n discovery rate = 1/TransitionRatio
+    //   length == n discovery rate: 1 - 1/TransitionRatio
+    //   meeting target rate 1/FractionalDiff * (1 - 1/TransitionRatio) + 1/TranstionRatio
+    //   fractionalDiff = nFractionalDiffculty / nFractionalDifficultyMin
+    //   fractional multiplier = 1 / meeting target rate
+    //       = (TransitionRatio * FractionalDiff) / (TransitionRatio - 1 + FractionalDiff)
+    uint64_t nFractionalDifficulty = TargetGetFractionalDifficulty(block.nBits);
+    unsigned int nWorkExp = 8;
+    nWorkExp += nWorkTransitionRatioLog * (TargetGetLength(block.nBits) - Params().GetConsensus().nTargetMinLength);
+    CBigNum bnWork = CBigNum(1) << nWorkExp;
+    bnWork *= ((uint64_t) nWorkTransitionRatio) * nFractionalDifficulty;
+    bnWork /= (((uint64_t) nWorkTransitionRatio - 1) * nFractionalDifficultyMin + nFractionalDifficulty);
+    return UintToArith256(bnWork.getuint256()); //TODO: DATACOIN. Оптимизировать возвращение arith_uint256?
 }
 
 int64_t GetBlockProofEquivalentTime(const CBlockIndex& to, const CBlockIndex& from, const CBlockIndex& tip, const Consensus::Params& params)

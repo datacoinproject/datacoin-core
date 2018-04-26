@@ -13,7 +13,7 @@
  * for both bitcoind and bitcoin-qt, to make it harder for attackers to
  * target servers or GUI users specifically.
  */
-const std::string CLIENT_NAME("Satoshi");
+const std::string CLIENT_NAME("DatacoinCore.Veter");
 
 /**
  * Client version number
@@ -100,8 +100,8 @@ std::string FormatSubVersion(const std::string& name, int nClientVersion, const 
         ss << ")";
     }
     ss << "/";
-	ss << "Datacoin:" << FormatVersion(nClientVersion);
-    //ss << "(" << CLIENT_BUILD << ")/"; 
-	ss << "/";
+//	ss << "Datacoin:" << FormatVersion(nClientVersion);
+//    //ss << "(" << CLIENT_BUILD << ")/"; 
+//	ss << "/";
     return ss.str();
 }

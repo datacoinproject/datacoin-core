@@ -7,7 +7,7 @@
 #include "clientversion.h"
 #include "util.h"
 #include "warnings.h"
-#include "checkpointsync.h"
+//#include "prime/checkpointsync.h" //DATACOIN CHECKPOINTSYNC
 
 CCriticalSection cs_warnings;
 std::string strMiscWarning;
@@ -56,12 +56,13 @@ std::string GetWarnings(const std::string& strFor)
         strStatusBar = strRPC = strGUI = "testsafemode enabled";
 
     // Checkpoint warning
-    if (strCheckpointWarning != "")
-    {
-        //nPriority = 900;
-        strStatusBar = strCheckpointWarning;
-		strGUI += (strGUI.empty() ? "" : uiAlertSeperator) + strCheckpointWarning;
-    }
+	//DATACOIN CHECKPOINTSYNC
+    //if (strCheckpointWarning != "")
+    //{
+    //    //nPriority = 900;
+    //    strStatusBar = strCheckpointWarning;
+	//	strGUI += (strGUI.empty() ? "" : uiAlertSeperator) + strCheckpointWarning;
+    //}
 
     // Misc warnings like out of disk space and clock is wrong
     if (strMiscWarning != "")
@@ -82,12 +83,13 @@ std::string GetWarnings(const std::string& strFor)
     }
 
     // ppcoin: if detected invalid checkpoint enter safe mode
-    if (hashInvalidCheckpoint != uint256(0))
-    {
-        //nPriority = 3000;
-        strStatusBar = strRPC = "WARNING: Inconsistent checkpoint found! Stop enforcing checkpoints and notify developers to resolve the issue.";
-		strGUI += (strGUI.empty() ? "" : uiAlertSeperator) + _("WARNING: Inconsistent checkpoint found! Stop enforcing checkpoints and notify developers to resolve the issue.");
-    }
+	//DATACOIN CHECKPOINTSYNC
+    //if (hashInvalidCheckpoint != uint256(0))
+    //{
+    //    //nPriority = 3000;
+    //    strStatusBar = strRPC = "WARNING: Inconsistent checkpoint found! Stop enforcing checkpoints and notify developers to resolve the issue.";
+	//	strGUI += (strGUI.empty() ? "" : uiAlertSeperator) + _("WARNING: Inconsistent checkpoint found! Stop enforcing checkpoints and notify developers to resolve the issue.");
+    //}
 
     if (strFor == "gui")
         return strGUI;

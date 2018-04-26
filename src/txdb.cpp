@@ -289,9 +289,13 @@ bool CBlockTreeDB::LoadBlockIndexGuts(const Consensus::Params& consensusParams, 
                 pindexNew->nTime          = diskindex.nTime;
                 pindexNew->nBits          = diskindex.nBits;
                 pindexNew->nNonce         = diskindex.nNonce;
+				pindexNew->bnPrimeChainMultiplier = diskindex.bnPrimeChainMultiplier;
                 pindexNew->nStatus        = diskindex.nStatus;
                 pindexNew->nTx            = diskindex.nTx;
+				pindexNew->nDataSize      = diskindex.nDataSize;
 
+				//TODO: DATACOIN. Понятно почему XPM отключили это. У них не было bnPrimeChainMultiplier.
+				//Но у нас есть. Включить? Замедлит загрузку. Замерить на сколько.
 				// Primecoin: disabled proof-of-work check for loading block index
                 //if (!CheckProofOfWork(pindexNew->GetBlockHeaderHash(), pindexNew->nBits, consensusParams))
                 //    return error("%s: CheckProofOfWork failed: %s", __func__, pindexNew->ToString());

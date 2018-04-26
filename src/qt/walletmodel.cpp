@@ -227,7 +227,7 @@ WalletModel::SendCoinsReturn WalletModel::prepareTransaction(WalletModelTransact
                 CRecipient recipient = {scriptPubKey, nAmount, rcp.fSubtractFeeFromAmount};
                 vecSend.push_back(recipient);
             }
-            if (subtotal < MIN_TXOUT_AMOUNT) //DATACOIN
+            if (subtotal < MIN_TXOUT_AMOUNT) //DATACOIN ADDED
             {
                 return InvalidAmount;
             }
@@ -239,7 +239,7 @@ WalletModel::SendCoinsReturn WalletModel::prepareTransaction(WalletModelTransact
             {
                 return InvalidAddress;
             }
-            if(rcp.amount < MIN_TXOUT_AMOUNT) //DATACOIN
+            if(rcp.amount < MIN_TXOUT_AMOUNT) //DATACOIN ADDED
             {
                 return InvalidAmount;
             }

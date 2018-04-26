@@ -139,7 +139,7 @@
     </message>
     <message>
         <source>Send coins to a Datacoin address</source>
-        <translation>Испрати биткоини на Биткоин адреса</translation>
+        <translation>Испрати коини на DTC адреса</translation>
     </message>
     <message>
         <source>&amp;Verify message...</source>
@@ -147,7 +147,7 @@
     </message>
     <message>
         <source>Datacoin</source>
-        <translation>Биткоин</translation>
+        <translation>Datacoin</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -579,7 +579,7 @@
     </message>
     <message>
         <source>Datacoin Core</source>
-        <translation>Биткоин Core</translation>
+        <translation>Datacoin Core</translation>
     </message>
     <message>
         <source>Warning</source>

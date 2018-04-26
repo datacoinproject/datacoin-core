@@ -53,11 +53,11 @@ static const bool DEFAULT_WHITELISTFORCERELAY = true;
 /** Default for -minrelaytxfee, minimum relay fee for transactions */
 static const unsigned int DEFAULT_MIN_RELAY_TX_FEE = MIN_TX_FEE;
 //! -maxtxfee default
-static const CAmount DEFAULT_TRANSACTION_MAXFEE = 10 * COIN; //DATACOIN
+static const CAmount DEFAULT_TRANSACTION_MAXFEE = 10 * COIN; //DATACOIN CHANGED
 //! Discourage users to set fees higher than this amount (in satoshis) per kB
-static const CAmount HIGH_TX_FEE_PER_KB = 0.05 * COIN;  //DATACOINN
+static const CAmount HIGH_TX_FEE_PER_KB = 0.05 * COIN;  //DATACOIN CHANGED
 //! -maxtxfee will warn if called with a higher fee than this amount (in satoshis)
-static const CAmount HIGH_MAX_TX_FEE = 128 * HIGH_TX_FEE_PER_KB + MIN_TX_FEE; //DATACOIN
+static const CAmount HIGH_MAX_TX_FEE = 128 * HIGH_TX_FEE_PER_KB + MIN_TX_FEE; //DATACOIN CHANGED
 /** Default for -limitancestorcount, max number of in-mempool ancestors */
 static const unsigned int DEFAULT_ANCESTOR_LIMIT = 25;
 /** Default for -limitancestorsize, maximum kilobytes of tx + all in-mempool ancestors */
@@ -130,7 +130,7 @@ static const int64_t MAX_FEE_ESTIMATION_TIP_AGE = 3 * 60 * 60;
 /** Default for -permitbaremultisig */
 static const bool DEFAULT_PERMIT_BAREMULTISIG = true;
 static const bool DEFAULT_CHECKPOINTS_ENABLED = true;
-static const bool DEFAULT_TXINDEX = true; //DATACOIN
+static const bool DEFAULT_TXINDEX = true; //DATACOIN CHANGED
 static const unsigned int DEFAULT_BANSCORE_THRESHOLD = 100;
 /** Default for -persistmempool */
 static const bool DEFAULT_PERSIST_MEMPOOL = true;

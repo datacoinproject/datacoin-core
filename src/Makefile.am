@@ -48,13 +48,13 @@ $(LIBSECP256K1): $(wildcard secp256k1/src/*) $(wildcard secp256k1/include/*)
 # Make is not made aware of per-object dependencies to avoid limiting building parallelization
 # But to build the less dependent modules first, we manually select their order here:
 EXTRA_LIBRARIES += \
+  $(LIBBITCOIN_CRYPTO) \
+  $(LIBBITCOIN_UTIL) \
   $(LIBBITCOIN_COMMON) \
   $(LIBBITCOIN_CONSENSUS) \
   $(LIBBITCOIN_SERVER) \
   $(LIBBITCOIN_CLI) \
   $(LIBBITCOIN_WALLET) \
-  $(LIBBITCOIN_UTIL) \
-  $(LIBBITCOIN_CRYPTO) \
   $(LIBBITCOIN_ZMQ)
 
 lib_LTLIBRARIES = $(LIBBITCOINCONSENSUS)
@@ -122,6 +122,7 @@ BITCOIN_CORE_H = \
   policy/policy.h \
   policy/rbf.h \
   pow.h \
+  prime/prime.h \
   protocol.h \
   random.h \
   reverse_iterator.h \
@@ -187,12 +188,10 @@ libbitcoin_server_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libdatacoin_server_a_SOURCES = \
   addrdb.cpp \
   addrman.cpp \
-  alert.cpp \
   bloom.cpp \
   blockencodings.cpp \
   chain.cpp \
   checkpoints.cpp \
-  checkpointsync.cpp \
   consensus/tx_verify.cpp \
   httprpc.cpp \
   httpserver.cpp \
@@ -207,7 +206,7 @@ libdatacoin_server_a_SOURCES = \
   policy/policy.cpp \
   policy/rbf.cpp \
   pow.cpp \
-  prime.cpp \
+  prime/prime.cpp \
   rest.cpp \
   rpc/blockchain.cpp \
   rpc/mining.cpp \
@@ -226,7 +225,6 @@ libdatacoin_server_a_SOURCES = \
   validation.cpp \
   validationinterface.cpp \
   versionbits.cpp \
-  warnings.cpp \
   $(BITCOIN_CORE_H)
 
 if ENABLE_ZMQ
@@ -314,8 +312,8 @@ libdatacoin_consensus_a_SOURCES = \
   uint256.h \
   utilstrencodings.cpp \
   utilstrencodings.h \
-  version.h \
-  support/cleanse.cpp
+  version.h
+#  support/cleanse.cpp
 
 # common: shared between bitcoind, and bitcoin-qt and non-server tools
 libdatacoin_common_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
@@ -323,35 +321,20 @@ libdatacoin_common_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libdatacoin_common_a_SOURCES = \
   base58.cpp \
   bech32.cpp \
-  chain.cpp \
   chainparams.cpp \
-  checkpoints.cpp \
-  checkpointsync.cpp \
   coins.cpp \
   compressor.cpp \
-  consensus/tx_verify.cpp \
   core_read.cpp \
   core_write.cpp \
-  init.cpp \
   key.cpp \
   keystore.cpp \
-  miner.cpp \
   netaddress.cpp \
   netbase.cpp \
   policy/feerate.cpp \
-  policy/policy.cpp \
-  pow.cpp \
   protocol.cpp \
-  prime.cpp \
   scheduler.cpp \
   script/sign.cpp \
   script/standard.cpp \
-  timedata.cpp \
-  txmempool.cpp \
-  txdb.cpp \
-  validation.cpp \
-  validationinterface.cpp \
-  versionbits.cpp \
   warnings.cpp \
   $(BITCOIN_CORE_H)
 
@@ -367,7 +350,6 @@ libdatacoin_util_a_SOURCES = \
   compat/glibc_sanity.cpp \
   compat/glibcxx_sanity.cpp \
   compat/strnlen.cpp \
-  crypto/chacha20.cpp \
   fs.cpp \
   random.cpp \
   rpc/protocol.cpp \
@@ -449,17 +431,21 @@ if TARGET_WINDOWS
 datacoin_tx_SOURCES += bitcoin-tx-res.rc
 endif
 
+#<binary>_LDADD= @start_group@ <libs> @end_group@   -Wl,--start-group   -Wl,--end-group
 datacoin_tx_LDADD = \
+  $(LIBBITCOIN_SERVER) \
   $(LIBBITCOIN_COMMON) \
   $(LIBBITCOIN_UTIL) \
+  $(LIBBITCOIN_WALLET) \
   $(LIBBITCOIN_CONSENSUS) \
   $(LIBBITCOIN_CRYPTO) \
-  $(EXTRA_LIBRARIES) \
-  $(LIBUNIVALUE) \
   $(LIBSECP256K1) \
-  $(MINIUPNPC_LIBS) \
+  $(LIBUNIVALUE) \
+  $(LIBBITCOIN_ZMQ) \
   $(LIBLEVELDB) \
+  $(LIBMEMENV) \
   $(LIBLEVELDB_SSE42) \
+  $(MINIUPNPC_LIBS) \
   $(EVENT_LIBS)
 
 datacoin_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS) $(BDB_LIBS) $(ZMQ_LIBS)

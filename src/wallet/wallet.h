@@ -45,13 +45,13 @@ static const unsigned int DEFAULT_KEYPOOL_SIZE = 1000;
 //! -paytxfee default
 static const CAmount DEFAULT_TRANSACTION_FEE = MIN_TX_FEE; //TODO: DATACOIN надо проверить можно ли сделать плату меньше MIN_TX_FEE
 //! -fallbackfee default
-static const CAmount DEFAULT_FALLBACK_FEE = MIN_TX_FEE; //DATACOIN
+static const CAmount DEFAULT_FALLBACK_FEE = MIN_TX_FEE; //DATACOIN CHANGED
 //! -m_discard_rate default
-static const CAmount DEFAULT_DISCARD_FEE = MIN_TX_FEE; //DATACOIN
+static const CAmount DEFAULT_DISCARD_FEE = MIN_TX_FEE; //DATACOIN CHANGED
 //! -mintxfee default
 static const CAmount DEFAULT_TRANSACTION_MINFEE = MIN_TX_FEE;
 //! minimum recommended increment for BIP 125 replacement txs
-static const CAmount WALLET_INCREMENTAL_RELAY_FEE = MIN_TX_FEE; //DATACOIN
+static const CAmount WALLET_INCREMENTAL_RELAY_FEE = MIN_TX_FEE; //DATACOIN CHANGED
 //! target minimum change amount
 static const CAmount MIN_CHANGE = CENT;
 //! final minimum change amount after paying for fees

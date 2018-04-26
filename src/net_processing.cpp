@@ -30,7 +30,7 @@
 #include "utilmoneystr.h"
 #include "utilstrencodings.h"
 #include "validationinterface.h"
-#include "checkpointsync.h"
+//#include "prime/checkpointsync.h" //DATACOIN CHECKPOINTSYNC
 
 #if defined(NDEBUG)
 # error "Datacoin cannot be compiled without assertions."
@@ -1363,12 +1363,13 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
             connman->MarkAddressGood(pfrom->addr);
         }
 
+		//DATACOIN CHECKPOINTSYNC
         // ppcoin: relay sync-checkpoint
-        {
-            LOCK(cs_hashSyncCheckpoint);
-            if (!checkpointMessage.IsNull())
-                checkpointMessage.RelayTo(pfrom, connman);
-        }
+        //{
+        //    LOCK(cs_hashSyncCheckpoint);
+        //    if (!checkpointMessage.IsNull())
+        //        checkpointMessage.RelayTo(pfrom, connman);
+        //}
 
 
         std::string remoteAddr;
@@ -1398,9 +1399,10 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
             pfrom->fDisconnect = true;
         }
 		
+		//DATACOIN CHECKPOINTSYNC
         // ppcoin: ask for pending sync-checkpoint if any
-        if (!IsInitialBlockDownload())
-            AskForPendingSyncCheckpoint(pfrom);
+        //if (!IsInitialBlockDownload())
+        //    AskForPendingSyncCheckpoint(pfrom);
 
         return true;
     }
@@ -1569,7 +1571,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
 
         uint32_t nFetchFlags = GetFetchFlags(pfrom);
 		
-		CInv* pLastBlockInv = nullptr; //DATACOIN
+		CInv* pLastBlockInv = nullptr; //DATACOIN ADDED
         for (CInv &inv : vInv)
         {
             if (interruptMsgProc)
@@ -1585,7 +1587,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
             if (inv.type == MSG_BLOCK) {
                 UpdateBlockAvailability(pfrom->GetId(), inv.hash);
 	            LogPrint(BCLog::NET, "!fAlreadyHave=%d !fImporting=%d !fReindex=%d !mapBlocksInFlight.count(inv.hash)=%d\n", 
-					(int)!fAlreadyHave, (int)!fImporting, (int)!fReindex, (int)!mapBlocksInFlight.count(inv.hash)); //DATACOIN
+					(int)!fAlreadyHave, (int)!fImporting, (int)!fReindex, (int)!mapBlocksInFlight.count(inv.hash)); //DATACOIN ADDED
                 if (!fAlreadyHave && !fImporting && !fReindex && !mapBlocksInFlight.count(inv.hash)) {
                     // We used to request the full block here, but since headers-announcements are now the
                     // primary method of announcement on the network, and since, in the case that a node
@@ -1614,9 +1616,9 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
             // Track requests for our stuff
             GetMainSignals().Inventory(inv.hash);
         }
-		if (pLastBlockInv && !IsInitialBlockDownload()) //DATACOIN
+		if (pLastBlockInv && !IsInitialBlockDownload()) //DATACOIN ADDED
 		{
-                    connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::GETHEADERS, chainActive.GetLocator(pindexBestHeader), uint256())); //DATACOIN Оптимизировать?
+                    connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::GETHEADERS, chainActive.GetLocator(pindexBestHeader), uint256())); //DATACOIN OPTIMIZE?
                     LogPrint(BCLog::NET, "getheaders (%d) %s to peer=%d\n", pindexBestHeader->nHeight, uint256().ToString(), pfrom->GetId());
 					pfrom->AskFor(*pLastBlockInv);
 		}
@@ -1799,7 +1801,8 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         LogPrint(BCLog::NET, "getheaders %d to %s from peer=%d\n", (pindex ? pindex->nHeight : -1), hashStop.IsNull() ? "end" : hashStop.ToString(), pfrom->GetId());
         for (; pindex; pindex = chainActive.Next(pindex))
         {
-            vHeaders.push_back(pindex->GetNonFullBlockHeader());
+            //vHeaders.push_back(pindex->GetNonFullBlockHeader());
+            vHeaders.push_back(pindex->GetFullBlockHeader()); //DATACOIN ADDED
             if (--nLimit <= 0 || pindex->GetBlockHash() == hashStop)
                 break;
         }
@@ -2188,14 +2191,15 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
             }
             bool fNewBlock = false;
             if (ProcessNewBlock(chainparams, pblock, true, &fNewBlock) && fNewBlock){
+				//DATACOIN CHECKPOINTSYNC
 				// ppcoin: ask for pending sync-checkpoint if any
-				if (!IsInitialBlockDownload()) //TODO: after AcceptBlockHeader????????
-					AskForPendingSyncCheckpoint(pfrom);
-
-				// ppcoin: if responsible for sync-checkpoint send it
-				if (pfrom && !CSyncCheckpoint::strMasterPrivKey.empty() &&
-					(int)gArgs.GetArg("-checkpointdepth", -1) >= 0)
-					SendSyncCheckpoint(AutoSelectSyncCheckpoint());
+				//if (!IsInitialBlockDownload()) //TODO: after AcceptBlockHeader????????
+				//	AskForPendingSyncCheckpoint(pfrom);
+                //
+				//// ppcoin: if responsible for sync-checkpoint send it
+				//if (pfrom && !CSyncCheckpoint::strMasterPrivKey.empty() &&
+				//	(int)gArgs.GetArg("-checkpointdepth", -1) >= 0)
+				//	SendSyncCheckpoint(AutoSelectSyncCheckpoint());
 			}
             if (fNewBlock) {
                 pfrom->nLastBlockTime = GetTime();
@@ -2330,14 +2334,14 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
             nodestate->nUnconnectingHeaders++;
             connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::GETHEADERS, chainActive.GetLocator(pindexBestHeader), uint256()));
             LogPrint(BCLog::NET, "received header %s: missing prev block %s, sending getheaders (%d) to end (peer=%d, nUnconnectingHeaders=%d)\n",
-                    nCount > 1 ? headers[1].hashPrevBlock.ToString() : "HASH_ABSENT", //DATACOIN
+                    nCount > 1 ? headers[1].hashPrevBlock.ToString() : "HASH_ABSENT", //DATACOIN ADDED
                     headers[0].hashPrevBlock.ToString(),
                     pindexBestHeader->nHeight,
                     pfrom->GetId(), nodestate->nUnconnectingHeaders);
             // Set hashLastUnknownBlock for this peer, so that if we
             // eventually get the headers - even from a different peer -
             // we can use this peer to download.
-            UpdateBlockAvailability(pfrom->GetId(), headers.back().hashPrevBlock); //DATACOIN
+            UpdateBlockAvailability(pfrom->GetId(), headers.back().hashPrevBlock); //DATACOIN ADDED
 
             if (nodestate->nUnconnectingHeaders % MAX_UNCONNECTING_HEADERS == 0) {
                 Misbehaving(pfrom->GetId(), 20);
@@ -2408,7 +2412,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         }
         nodestate->nUnconnectingHeaders = 0;
 
-		if (nCount==1 && !pindexLast) return true; //DATACOIN OLD CLIENT
+		if (nCount==1 && !pindexLast) return true; //DATACOIN OLDCLIENT
 			
         assert(pindexLast);
         UpdateBlockAvailability(pfrom->GetId(), pindexLast->GetBlockHash());
@@ -2425,7 +2429,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         // If this set of headers is valid and ends in a block with at least as
         // much work as our tip, download as much as possible.
 		LogPrint(BCLog::NET, "fCanDirectFetch=%d pindexLast->IsValid(BLOCK_VALID_TREE)=%d chainActive.Tip()->nChainWork=%s pindexLast->nChainWork=%s\n", 
-					(int)fCanDirectFetch, (int)pindexLast->IsValid(BLOCK_VALID_TREE), chainActive.Tip()->nChainWork.ToString(), pindexLast->nChainWork.ToString()); //DATACOIN
+					(int)fCanDirectFetch, (int)pindexLast->IsValid(BLOCK_VALID_TREE), chainActive.Tip()->nChainWork.ToString(), pindexLast->nChainWork.ToString()); //DATACOIN ADDED
         if (fCanDirectFetch && pindexLast->IsValid(BLOCK_VALID_TREE) && chainActive.Tip()->nChainWork <= pindexLast->nChainWork) {
             std::vector<const CBlockIndex*> vToFetch;
             const CBlockIndex *pindexWalk = pindexLast;
@@ -2673,21 +2677,22 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         }
     }
 
-    else if (strCommand == "checkpoint") // ppcoin synchronized checkpoint
-    {
-        CSyncCheckpoint checkpoint;
-        vRecv >> checkpoint;
-
-        if (checkpoint.ProcessSyncCheckpoint(pfrom))
-        {
-            // Relay
-            pfrom->hashCheckpointKnown = checkpoint.hashCheckpoint;
-			connman->ForEachNode([&checkpoint, &connman](CNode* pnode)
-                {
-                    checkpoint.RelayTo(pnode, connman);
-                });
-        }
-    }
+	//DATACOIN CHECKPOINTSYNC
+    //else if (strCommand == "checkpoint") // ppcoin synchronized checkpoint
+    //{
+    //    CSyncCheckpoint checkpoint;
+    //    vRecv >> checkpoint;
+    //
+    //    if (checkpoint.ProcessSyncCheckpoint(pfrom))
+    //    {
+    //        // Relay
+    //        pfrom->hashCheckpointKnown = checkpoint.hashCheckpoint;
+	//		connman->ForEachNode([&checkpoint, &connman](CNode* pnode)
+    //            {
+    //                checkpoint.RelayTo(pnode, connman);
+    //            });
+    //    }
+    //}
 
     else if (strCommand == NetMsgType::FILTERLOAD)
     {

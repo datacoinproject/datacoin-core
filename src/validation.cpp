@@ -4,7 +4,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "validation.h"
-#include "prime.h"
+#include "prime/prime.h"
 
 #include "arith_uint256.h"
 #include "chain.h"
@@ -42,7 +42,7 @@
 #include "validationinterface.h"
 #include "versionbits.h"
 #include "warnings.h"
-#include "checkpointsync.h"
+//#include "prime/checkpointsync.h" //DATACOIN CHECKPOINTSYNC
 
 #include <atomic>
 #include <sstream>
@@ -2066,13 +2066,14 @@ void static UpdateTip(CBlockIndex *pindexNew, const CChainParams& chainParams) {
         }
     }
 
-    if (!IsSyncCheckpointEnforced()) // checkpoint advisory mode
-    {
-        if (chainActive.Tip()->pprev && !CheckSyncCheckpoint(chainActive.Tip()->GetBlockHash(), chainActive.Tip()->pprev))
-            strCheckpointWarning = _("Warning: checkpoint on different blockchain fork, contact developers to resolve the issue");
-        else
-            strCheckpointWarning = "";
-    }
+	//DATACOIN CHECKPOINTSYNC
+    //if (!IsSyncCheckpointEnforced()) // checkpoint advisory mode
+    //{
+    //    if (chainActive.Tip()->pprev && !CheckSyncCheckpoint(chainActive.Tip()->GetBlockHash(), chainActive.Tip()->pprev))
+    //        strCheckpointWarning = _("Warning: checkpoint on different blockchain fork, contact developers to resolve the issue");
+    //    else
+    //        strCheckpointWarning = "";
+    //}
 
     //LogPrintf("%s: new best=%s height=%d version=0x%08x log2_work=%.8g tx=%lu date='%s' progress=%f cache=%.1fMiB(%utxo)", __func__,
     //  chainActive.Tip()->GetBlockHash().ToString(), chainActive.Height(), chainActive.Tip()->nVersion,
@@ -2085,8 +2086,8 @@ void static UpdateTip(CBlockIndex *pindexNew, const CChainParams& chainParams) {
 	if(fReindex || IsInitialBlockDownload()) {
 		LogPrintf("HEIGHT=%d OK",	pindexNew->nHeight); //Бережный размер лога при полном реиндексе
 	}else{
-		LogPrintf("SetBestChain: new best=%s  height=%d  difficulty=%.8g log2Work=%.8g  log2ChainWork=%.8g  tx=%lu  date=%s progress=%f\n",
-			pindexNew->GetBlockHash().ToString().c_str(), pindexNew->nHeight, GetPrimeDifficulty(pindexNew->nBits), log(nBlockWork.getdouble())/log(2.0), log(pindexNew->nChainWork.getdouble())/log(2.0), (unsigned long)pindexNew->nChainTx,
+		LogPrintf("SetBestChain: new best=%s  height=%d  difficulty=%.8g log2Work=%.8g  log2ChainWork=%.8g  tx=%lu  data=%llu  date=%s progress=%f",
+			pindexNew->GetBlockHash().ToString().c_str(), pindexNew->nHeight, GetPrimeDifficulty(pindexNew->nBits), log(nBlockWork.getdouble())/log(2.0), log(pindexNew->nChainWork.getdouble())/log(2.0), (unsigned long)pindexNew->nChainTx, (unsigned long long)pindexNew->nChainDataSize,
 			DateTimeStrFormat("%Y-%m-%d %H:%M:%S", pindexNew->GetBlockTime()).c_str(),
 			GuessVerificationProgress(chainParams.TxData(), pindexNew));
 	}
@@ -2645,7 +2646,7 @@ bool ResetBlockFailureFlags(CBlockIndex *pindex) {
 static CBlockIndex* AddToBlockIndex(const CBlockHeader& block, const uint256* phash, bool isFullBlock = false) //TODO: Datacoin. костыль. block обязан быть ссылкой на полный блок если isFullBlock == true
 {
     // Check for duplicate
-    uint256 hash = phash ? *phash : block.GetHash(); //DATACOIN
+    uint256 hash = phash ? *phash : block.GetHash(); //DATACOIN CHANGED
     BlockMap::iterator it = mapBlockIndex.find(hash);
     if (it != mapBlockIndex.end())
 	{	
@@ -2700,7 +2701,11 @@ static CBlockIndex* AddToBlockIndex(const CBlockHeader& block, const uint256* ph
 static bool ReceivedBlockTransactions(const CBlock &block, CValidationState& state, CBlockIndex *pindexNew, const CDiskBlockPos& pos, const Consensus::Params& consensusParams)
 {
     pindexNew->nTx = block.vtx.size();
+	unsigned int dataSize = 0;
+	for(auto& tx: block.vtx) { dataSize += tx->data.size(); }
+	pindexNew->nDataSize = dataSize;
     pindexNew->nChainTx = 0;
+	pindexNew->nChainDataSize = 0;
     pindexNew->nFile = pos.nFile;
     pindexNew->nDataPos = pos.nPos;
     pindexNew->nUndoPos = 0;
@@ -2721,6 +2726,7 @@ static bool ReceivedBlockTransactions(const CBlock &block, CValidationState& sta
             CBlockIndex *pindex = queue.front();
             queue.pop_front();
             pindex->nChainTx = (pindex->pprev ? pindex->pprev->nChainTx : 0) + pindex->nTx;
+			pindex->nChainDataSize = (pindex->pprev ? pindex->pprev->nChainDataSize : 0) + pindex->nDataSize;
             {
                 LOCK(cs_nBlockSequenceId);
                 pindex->nSequenceId = nBlockSequenceId++;
@@ -3030,13 +3036,16 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
         return state.Invalid(false, REJECT_INVALID, "time-too-new", "block timestamp too far in the future");
 
 	//TODO: Datacoin version control
-    // ppcoin: check that the block satisfies synchronized checkpoint
-    if (IsSyncCheckpointEnforced() // checkpoint enforce mode
-        && !CheckSyncCheckpoint(block.GetHash(), pindexPrev))
-        return error("AcceptBlock() : rejected by synchronized checkpoint");
+	//DATACOIN CHECKPOINTSYNC
+    //// ppcoin: check that the block satisfies synchronized checkpoint
+    //if (IsSyncCheckpointEnforced() // checkpoint enforce mode
+    //    && !CheckSyncCheckpoint(block.GetHash(), pindexPrev))
+    //    return error("AcceptBlock() : rejected by synchronized checkpoint");
     // Primecoin: block version starts from 2
     if (block.nVersion < 2)
         return state.Invalid(error("AcceptBlock() : rejected nVersion=1 block"));
+	
+	//TODO: Datacoin
 	/*
     // Reject outdated version blocks when 95% (75% on testnet) of the network has upgraded:
     // check for version 2, 3 and 4 upgrades
@@ -3135,7 +3144,7 @@ static bool AcceptBlockHeader(const CBlockHeader& block, const uint256* phash, C
 {
     AssertLockHeld(cs_main);
     // Check for duplicate
-    uint256 hash = phash ? *phash : block.GetHash(); //DATACOIN
+    uint256 hash = phash ? *phash : block.GetHash(); //DATACOIN CHANGED
     BlockMap::iterator miSelf = mapBlockIndex.find(hash);
     CBlockIndex *pindex = nullptr;
     if (hash != chainparams.GetConsensus().hashGenesisBlock) {
@@ -3147,7 +3156,7 @@ static bool AcceptBlockHeader(const CBlockHeader& block, const uint256* phash, C
 			CBlockIndex*& pindexOld = pindex;
 			if ( isFullBlock && pindexOld->nPrimeChainLength==0 && pindexOld->nPrimeChainType==0 )
 			{	auto& fBlock = static_cast<const CBlock&>(block);
-				pindexOld->nPrimeChainType = fBlock.nPrimeChainType;  //DATACOIN. Доустанавливаем поля
+				pindexOld->nPrimeChainType = fBlock.nPrimeChainType;  //DATACOIN ADDED Доустанавливаем поля
 				pindexOld->nPrimeChainLength = fBlock.nPrimeChainLength;
 				pindexOld->nWorkTransition = EstimateWorkTransition((pindexOld->pprev ? pindexOld->pprev->nWorkTransition : TargetGetInitial()), fBlock.nBits, fBlock.nPrimeChainLength);
 			}
@@ -3198,7 +3207,7 @@ bool ProcessNewBlockHeaders(const std::vector<CBlockHeader>& headers, CValidatio
         //        *ppindex = pindex;
         //    }
         //}
-		for (int i=0, size=headers.size(); i < size ; ++i) { //DATACOIN HEADERS from OLD CLIENT
+		for (int i=0, size=headers.size(); i < size ; ++i) { //DATACOIN OLDCLIENT. Headers from old client
 			const CBlockHeader& header=headers[i];
             CBlockIndex *pindex = nullptr; // Use a temp pindex instead of ppindex to avoid a const_cast
 			
@@ -3358,7 +3367,8 @@ bool ProcessNewBlock(const CChainParams& chainparams, const std::shared_ptr<cons
             return error("%s: AcceptBlock FAILED (%s)", __func__, state.GetDebugMessage());
         }else{
 			// ppcoin: check pending sync-checkpoint
-			AcceptPendingSyncCheckpoint(); //TODO: here?
+			//DATACOIN CHECKPOINTSYNC
+			//AcceptPendingSyncCheckpoint(); //TODO: here?
 		}
     }
 
@@ -3641,12 +3651,15 @@ bool static LoadBlockIndexDB(const CChainParams& chainparams)
             if (pindex->pprev) {
                 if (pindex->pprev->nChainTx) {
                     pindex->nChainTx = pindex->pprev->nChainTx + pindex->nTx;
+					pindex->nChainDataSize = pindex->pprev->nChainDataSize + pindex->nDataSize;
                 } else {
                     pindex->nChainTx = 0;
+					pindex->nChainDataSize = 0;
                     mapBlocksUnlinked.insert(std::make_pair(pindex->pprev, pindex));
                 }
             } else {
                 pindex->nChainTx = pindex->nTx;
+				pindex->nChainDataSize = pindex->nDataSize;
             }
         }
         if (pindex->IsValid(BLOCK_VALID_TRANSACTIONS) && (pindex->nChainTx || pindex->pprev == nullptr))
@@ -3677,10 +3690,11 @@ bool static LoadBlockIndexDB(const CChainParams& chainparams)
     }
 
     // ppcoin: load hashSyncCheckpoint
-    if (!pblocktree->ReadSyncCheckpoint(hashSyncCheckpoint))
-        LogPrintf("LoadBlockIndexDB(): synchronized checkpoint not read\n");
-    else
-        LogPrintf("LoadBlockIndexDB(): synchronized checkpoint %s\n", hashSyncCheckpoint.ToString().c_str());
+	//DATACOIN CHECKPOINTSYNC
+    //if (!pblocktree->ReadSyncCheckpoint(hashSyncCheckpoint))
+    //    LogPrintf("LoadBlockIndexDB(): synchronized checkpoint not read\n");
+    //else
+    //    LogPrintf("LoadBlockIndexDB(): synchronized checkpoint %s\n", hashSyncCheckpoint.ToString().c_str());
 
 
     // Check presence of blk files
@@ -3994,6 +4008,8 @@ bool RewindBlockIndex(const CChainParams& params)
             // Remove various other things
             pindexIter->nTx = 0;
             pindexIter->nChainTx = 0;
+			pindexIter->nDataSize = 0;
+            pindexIter->nChainDataSize = 0;
             pindexIter->nSequenceId = 0;
             // Make sure it gets written.
             setDirtyBlockIndex.insert(pindexIter);
@@ -4083,8 +4099,9 @@ bool LoadBlockIndex(const CChainParams& chainparams)
     }
 
 	// ppcoin: if checkpoint master key changed must reset sync-checkpoint
-    if (!CheckCheckpointPubKey())
-        return error("LoadBlockIndex() : failed to reset checkpoint master pubkey");
+	//DATACOIN CHECKPOINTSYNC
+    //if (!CheckCheckpointPubKey())
+    //    return error("LoadBlockIndex() : failed to reset checkpoint master pubkey");
 
     // Primecoin: Generate prime table when starting up
     GeneratePrimeTable();
@@ -4119,8 +4136,9 @@ bool LoadGenesisBlock(const CChainParams& chainparams)
             return error("%s: genesis block not accepted", __func__);
 
         // ppcoin: initialize synchronized checkpoint
-        if (!WriteSyncCheckpoint(chainparams.GenesisBlock().GetHash()))
-            return error("LoadGenesisBlock() : failed to init sync checkpoint");
+		//DATACOIN CHECKPOINTSYNC
+        //if (!WriteSyncCheckpoint(chainparams.GenesisBlock().GetHash()))
+        //    return error("LoadGenesisBlock() : failed to init sync checkpoint");
 		
     } catch (const std::runtime_error& e) {
         return error("%s: failed to write genesis block: %s", __func__, e.what());
@@ -4591,30 +4609,59 @@ bool DumpMempool(void)
 double GuessVerificationProgress(const ChainTxData& data, CBlockIndex *pindex) {
 //TODO: DATACOIN. Пока синхронизация не будет как у нового клиента, делаем
 //предположение на основе обычного времени.
-	int64_t nNowTime = time(nullptr);
-	int64_t nGenesisTime = data.nTime;
-	int64_t nBlockTime = pindex->GetBlockTime();
-	
-	//LogPrintf("nGenesisTime=%dll nBlockTime=%dll nNowTime=%dll \n", nGenesisTime, nBlockTime, nNowTime );
-	//LogPrintf("Delta1=%dll Delta2=%dll Delta1/Delta2=\n", nBlockTime-nGenesisTime, nNowTime-nGenesisTime, (nBlockTime-nGenesisTime)/(nNowTime-nGenesisTime) );
-	
-	//data.nTime время первого блока
-	return ((double)nBlockTime-nGenesisTime)/((double)nNowTime-nGenesisTime);
+//	int64_t nNowTime = time(nullptr);
+//	int64_t nGenesisTime = data.nTime;
+//	int64_t nBlockTime = pindex->GetBlockTime();
+//	
+//	//LogPrintf("nGenesisTime=%dll nBlockTime=%dll nNowTime=%dll \n", nGenesisTime, nBlockTime, nNowTime );
+//	//LogPrintf("Delta1=%dll Delta2=%dll Delta1/Delta2=\n", nBlockTime-nGenesisTime, nNowTime-nGenesisTime, (nBlockTime-nGenesisTime)/(nNowTime-nGenesisTime) );
+//	
+//	//data.nTime время первого блока
+//	return ((double)nBlockTime-nGenesisTime)/((double)nNowTime-nGenesisTime);
 
-//    if (pindex == nullptr)
-//        return 0.0;
-//
-//    int64_t nNow = time(nullptr);
-//
-//    double fTxTotal;
-//
-//    if (pindex->nChainTx <= data.nTxCount) {
-//        fTxTotal = data.nTxCount + (nNow - data.nTime) * data.dTxRate;
-//    } else {
-//        fTxTotal = pindex->nChainTx + (nNow - pindex->GetBlockTime()) * data.dTxRate;
-//    }
-//
-//    return pindex->nChainTx / fTxTotal;
+//TODO: DATACOIN
+//Подобный код позволяет получать размер файлов на диске.
+//CBlockIndex *pindex содержит номер текущего файла
+//в ChainTxData в chainparams можно затащить размер файлов блокчейна
+//вероятно это позволит очень точно предсказывать прогресс операциии
+
+/*    LOCK(cs_LastBlockFile);
+
+    uint64_t retval = 0;
+    for (const CBlockFileInfo &file : vinfoBlockFile) {
+        retval += file.nSize + file.nUndoSize;
+    }
+    return retval;*/
+
+
+// 1 TX: ~ 497 bytes
+    if (pindex == nullptr)
+        return 0.0;
+
+    int64_t nNow = time(nullptr);
+
+    //double fTxTotal;
+    //
+    //if (pindex->nChainTx <= data.nTxCount) {
+    //    fTxTotal = data.nTxCount + (nNow - data.nTime) * data.dTxRate;
+    //} else {
+    //    fTxTotal = pindex->nChainTx + (nNow - pindex->GetBlockTime()) * data.dTxRate;
+    //}
+    //
+    //return pindex->nChainTx / fTxTotal;
+
+	double fTxTotal;
+
+	// 1 TX без Data: ~ 497 bytes    //TODO: DATACOIN. На самом деле транзакции очень разных размеров.
+    if (pindex->nChainTx <= data.nTxCount) {
+        fTxTotal = data.nTxCount*497 + data.nDataSize + 
+			(nNow - data.nTime) * (data.dTxRate*497 + data.dDataRate);
+    } else {
+        fTxTotal = pindex->nChainTx*497 + pindex->nChainDataSize + 
+			(nNow - pindex->GetBlockTime()) * (data.dTxRate*497 + data.dDataRate);
+    }
+    
+    return (pindex->nChainTx*497 + pindex->nChainDataSize) / fTxTotal;
 }
 
 class CMainCleanup
