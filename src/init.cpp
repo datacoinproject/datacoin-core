@@ -1683,8 +1683,8 @@ bool AppInitMain(boost::thread_group& threadGroup, CScheduler& scheduler)
     connOptions.nSendBufferMaxSize = 1000*gArgs.GetArg("-maxsendbuffer", DEFAULT_MAXSENDBUFFER);
     connOptions.nReceiveFloodSize = 1000*gArgs.GetArg("-maxreceivebuffer", DEFAULT_MAXRECEIVEBUFFER);
     connOptions.m_added_nodes = gArgs.GetArgs("-addnode");
-
-	//TODO: DATACOIN. Nodes for synchronization (not SID nodes)
+	
+	//TODO: DATACOIN. Ноды для синхронизации (не сид ноды)
 		connOptions.m_added_nodes.push_back("212.125.247.47");
 		connOptions.m_added_nodes.push_back("80.211.194.89");
 		connOptions.m_added_nodes.push_back("89.76.251.96");

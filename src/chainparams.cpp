@@ -108,7 +108,7 @@ public:
 
         // The best chain should have at least this much work.
         //consensus.nMinimumChainWork = uint256S("0x000000000000000000000000000000000000000000723d3581fe1bd55373540a");
-		//TODO: DATACOIN. The minimum work of the active chain. Calculated as the amount of work of blocks in DTC
+		//TODO: DATACOIN. Минимальная работа активной цепи. Вообще пересмртреть работу рассчитываемую как сумма работы блоков в DTC!!!
 		consensus.nMinimumChainWork = uint256S("0x00");
 
         // By default assume that the signatures in ancestors of this block are valid.

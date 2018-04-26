@@ -1505,16 +1505,16 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         if (vAddr.size() < 1000)
             pfrom->fGetAddr = false;
 		
-		//TODO: Datacoin. Don't disconnect from the seeds..
-		//TODO: DATACOIN. Do not disconnect and start aggressive synchronization with SID.
-		//Then return as it was
+		//TODO: Datacoin. Не отсоединяемся от сидов.
+		//TODO: DATACOIN. Не отсоединяемся и начинаем агрессивную синхронизацию с сида.
+		//Потом вернуть как было
 		//static bool agrSync=true;
 		//if (agrSync){
 		//	g_connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::GETHEADERS, chainActive.GetLocator(chainActive.Tip()), uint256()));
 		//	agrSync= false;
 		//}else{
-        if (pfrom->fOneShot)
-            pfrom->fDisconnect = true;
+			if (pfrom->fOneShot)
+				pfrom->fDisconnect = true;
 		//}
     }
 
@@ -1568,7 +1568,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         LOCK(cs_main);
 
         uint32_t nFetchFlags = GetFetchFlags(pfrom);
-
+		
 		CInv* pLastBlockInv = nullptr; //DATACOIN
         for (CInv &inv : vInv)
         {
@@ -2409,7 +2409,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         nodestate->nUnconnectingHeaders = 0;
 
 		if (nCount==1 && !pindexLast) return true; //DATACOIN OLD CLIENT
-
+			
         assert(pindexLast);
         UpdateBlockAvailability(pfrom->GetId(), pindexLast->GetBlockHash());
 
@@ -2502,7 +2502,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         bool fNewBlock = false;
         bool ret=ProcessNewBlock(chainparams, pblock, forceProcessing, &fNewBlock);
 		
-		//TODO: DATACOIN. Ugly code support for quick initial synchronization from old clients
+		//TODO: DATACOIN. Ugly code Костыль для быстрой начальной синхронизации от старых клиентов
 		int64_t curTime=GetTime();
 		//static int64_t lastNodeRollingTime=curTime;
 		//static int64_t lastSuccessBlockTime=curTime;
@@ -2536,7 +2536,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
 
 		pfrom->setAskFor.erase(pblock->GetHash());
 		mapAlreadyAskedFor.erase(pblock->GetHash());
-		
+					
         if (fNewBlock) {
             pfrom->nLastBlockTime = curTime;
         } else {

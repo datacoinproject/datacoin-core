@@ -173,15 +173,10 @@ AC_DEFUN([BITCOIN_QT_CONFIGURE],[
     TEMP_CXXFLAGS=$CXXFLAGS
     CPPFLAGS="$QT_INCLUDES $CPPFLAGS"
     CXXFLAGS="$PIE_FLAGS $CXXFLAGS"
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <QtCore/qconfig.h>
-        #ifndef QT_VERSION
-        #  include <QtCore/qglobal.h>
-        #endif
-      ]],
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <QtCore/qconfig.h>]],
       [[
           #if defined(QT_REDUCE_RELOCATIONS)
-          choke
+              choke;
           #endif
       ]])],
       [ AC_MSG_RESULT(yes); QT_PIE_FLAGS=$PIE_FLAGS ],
@@ -195,16 +190,11 @@ AC_DEFUN([BITCOIN_QT_CONFIGURE],[
     AC_MSG_CHECKING(whether -fPIC is needed with this Qt config)
     TEMP_CPPFLAGS=$CPPFLAGS
     CPPFLAGS="$QT_INCLUDES $CPPFLAGS"
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <QtCore/qconfig.h>
-        #ifndef QT_VERSION
-        #  include <QtCore/qglobal.h>
-        #endif
-      ]],
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <QtCore/qconfig.h>]],
       [[
-        #if defined(QT_REDUCE_RELOCATIONS)
-        choke
-        #endif
+          #if defined(QT_REDUCE_RELOCATIONS)
+              choke;
+          #endif
       ]])],
       [ AC_MSG_RESULT(no)],
       [ AC_MSG_RESULT(yes); QT_PIE_FLAGS=$PIC_FLAGS]
@@ -259,7 +249,6 @@ AC_DEFUN([BITCOIN_QT_CONFIGURE],[
   AC_MSG_RESULT([$bitcoin_enable_qt (Qt${bitcoin_qt_got_major_vers})])
 
   AC_SUBST(QT_PIE_FLAGS)
-  AC_SUBST(QT_PIC_FLAGS)
   AC_SUBST(QT_INCLUDES)
   AC_SUBST(QT_LIBS)
   AC_SUBST(QT_LDFLAGS)

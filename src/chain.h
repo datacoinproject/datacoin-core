@@ -285,7 +285,7 @@ public:
         return ret;
     }
 
-    CBlockHeader GetNonFullBlockHeader() const //TODO: DATACOIN was GetBlockHeader
+    CBlockHeader GetNonFullBlockHeader() const //TODO: DATACOIN было GetBlockHeader
     {
         CBlockHeader block;
         block.nVersion       = nVersion;

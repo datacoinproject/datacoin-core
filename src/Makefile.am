@@ -256,8 +256,8 @@ libdatacoin_wallet_a_SOURCES = \
   $(BITCOIN_CORE_H)
 
 # crypto primitives library
-crypto_libdatacoin_crypto_a_CPPFLAGS = $(AM_CPPFLAGS) $(PIC_FLAGS)
-crypto_libdatacoin_crypto_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS) $(PIC_FLAGS)
+crypto_libdatacoin_crypto_a_CPPFLAGS = $(AM_CPPFLAGS)
+crypto_libdatacoin_crypto_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 crypto_libdatacoin_crypto_a_SOURCES = \
   crypto/aes.cpp \
   crypto/aes.h \

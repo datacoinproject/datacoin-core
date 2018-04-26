@@ -3215,7 +3215,7 @@ bool ProcessNewBlockHeaders(const std::vector<CBlockHeader>& headers, CValidatio
             if (ppindex) {
                 *ppindex = pindex;
             }
-        }
+		}
     }
     NotifyHeaderTip();
     return true;

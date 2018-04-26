@@ -134,9 +134,10 @@ public:
         block.nTime          = nTime;
         block.nBits          = nBits;
         block.nNonce         = nNonce;
-		block.bnPrimeChainMultiplier = bnPrimeChainMultiplier;
-		//TODO: DATACOIN. !!! XPM Does not fill in this field. Fix?
-		//Also CBlockIndex::GetBlockHeader()
+		block.bnPrimeChainMultiplier
+							= bnPrimeChainMultiplier;
+		//TODO: DATACOIN. !!! XPM не заполяет это поле. Исправить?
+		//также CBlockIndex::GetBlockHeader()
 		//block.bnPrimeChainMultiplier = bnPrimeChainMultiplier; 
         return block;
     }

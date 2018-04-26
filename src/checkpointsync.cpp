@@ -468,10 +468,10 @@ bool CSyncCheckpoint::ProcessSyncCheckpoint(CNode* pfrom)
 			
             if (pindexStart->pprev)
                 pindexStart = pindexStart->pprev;
-			//TODO: DATACOIN. To ensure that there is no interference, disable the request headers
+			//TODO: DATACOIN. ЧТобы не было интерференции отключим тут запрос хедеров
 			//g_connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::GETHEADERS, chainActive.GetLocator(pindexStart), hashCheckpoint));
             
-            //pfrom->PushGetBlocks(chainActive.Tip(), hashCheckpoint);
+			//pfrom->PushGetBlocks(chainActive.Tip(), hashCheckpoint);
             // ask directly as well in case rejected earlier by duplicate
             // proof-of-stake because getblocks may not get it this time
             pfrom->AskFor(CInv(MSG_BLOCK, mapOrphanBlocks.count(hashCheckpoint)? WantedByOrphan(mapOrphanBlocks[hashCheckpoint]) : hashCheckpoint));
