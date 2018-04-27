@@ -1568,7 +1568,7 @@ UniValue getchaintxstats(const JSONRPCRequest& request)
     ret.push_back(Pair("window_block_count", blockcount));
     if (blockcount > 0) {
         ret.push_back(Pair("window_tx_count", nTxDiff));
-		ret.push_back(Pair("window_data_size", nDataSizeDiff));
+        ret.push_back(Pair("window_data_size", (double)nDataSizeDiff));
         ret.push_back(Pair("window_interval", nTimeDiff));
         if (nTimeDiff > 0) {
             ret.push_back(Pair("txrate", ((double)nTxDiff) / nTimeDiff));
