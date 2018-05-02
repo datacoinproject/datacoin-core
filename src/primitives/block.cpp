@@ -16,7 +16,7 @@ uint256 CBlockHeader::GetHash() const
         //CDataStream ss(SER_GETHASH, 0);
         //ss << nVersion << hashPrevBlock << hashMerkleRoot << nTime << nBits << nNonce << bnPrimeChainMultiplier;
         //return Hash(ss.begin(), ss.end());
-		//TODO: DATACOIN. Считаем хеш по новому
+		//DATACOIN CHANGED Считаем хеш по новому
 		return SerializeHash(*this);
 }
 

@@ -85,10 +85,10 @@ UniValue blockheaderToJSON(const CBlockIndex* blockindex)
     result.push_back(Pair("time", (int64_t)blockindex->nTime));
     result.push_back(Pair("mediantime", (int64_t)blockindex->GetMedianTimePast()));
     result.push_back(Pair("nonce", (uint64_t)blockindex->nNonce));
-	result.push_back(Pair("primechainmultiplier", blockindex->bnPrimeChainMultiplier.ToString())); //TODO: DATACOIN.
+	result.push_back(Pair("primechainmultiplier", blockindex->bnPrimeChainMultiplier.ToString())); //DATACOIN ADDED
     result.push_back(Pair("bits", strprintf("%08x", blockindex->nBits)));
     result.push_back(Pair("difficulty", GetPrimeDifficulty(blockindex->nBits)));
-    result.push_back(Pair("chainwork", blockindex->nChainWork.GetHex())); //TODO: DATACOIN.
+    result.push_back(Pair("chainwork", blockindex->nChainWork.GetHex())); 
     result.push_back(Pair("transition", GetPrimeDifficulty(blockindex->nWorkTransition)));
 	result.push_back(Pair("primechain", GetPrimeChainName(blockindex->nPrimeChainType, blockindex->nPrimeChainLength)));
 //	auto& hHash=blockindex->GetHeaderHash();
@@ -142,7 +142,7 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     result.push_back(Pair("time", block.GetBlockTime()));
     result.push_back(Pair("mediantime", (int64_t)blockindex->GetMedianTimePast()));
     result.push_back(Pair("nonce", (uint64_t)block.nNonce));
-	result.push_back(Pair("primechainmultiplier", block.bnPrimeChainMultiplier.ToString())); //TODO: DATACOIN.
+	result.push_back(Pair("primechainmultiplier", block.bnPrimeChainMultiplier.ToString())); //DATACOIN ADDED
     result.push_back(Pair("bits", strprintf("%08x", block.nBits)));
     result.push_back(Pair("difficulty", GetDifficulty(blockindex)));
     result.push_back(Pair("chainwork", blockindex->nChainWork.GetHex()));
@@ -691,7 +691,7 @@ UniValue getblockheader(const JSONRPCRequest& request)
     if (!fVerbose)
     {
         CDataStream ssBlock(SER_NETWORK, PROTOCOL_VERSION);
-        ssBlock << pblockindex->GetNonFullBlockHeader();
+        ssBlock << pblockindex->GetFullBlockHeader();
         std::string strHex = HexStr(ssBlock.begin(), ssBlock.end());
         return strHex;
     }
@@ -1568,7 +1568,7 @@ UniValue getchaintxstats(const JSONRPCRequest& request)
     ret.push_back(Pair("window_block_count", blockcount));
     if (blockcount > 0) {
         ret.push_back(Pair("window_tx_count", nTxDiff));
-        ret.push_back(Pair("window_data_size", (double)nDataSizeDiff));
+		ret.push_back(Pair("window_data_size", (int64_t)nDataSizeDiff));
         ret.push_back(Pair("window_interval", nTimeDiff));
         if (nTimeDiff > 0) {
             ret.push_back(Pair("txrate", ((double)nTxDiff) / nTimeDiff));

@@ -53,6 +53,36 @@ UniValue getsievesize(const JSONRPCRequest& request)
     return (boost::int64_t)nSieveSize;
 }
 
+UniValue setgenerate(const JSONRPCRequest& request)
+{
+	CWallet * const pwallet = GetWalletForJSONRPCRequest(request);
+    if (!EnsureWalletIsAvailable(pwallet, request.fHelp)) {
+        return NullUniValue;
+    }
+
+    if (request.fHelp || request.params.size() < 1 || request.params.size() > 2)
+        throw std::runtime_error(
+            "setgenerate <generate> [genproclimit]\n"
+            "<generate> is true or false to turn generation on or off.\n"
+            "Generation is limited to [genproclimit] processors, -1 is unlimited.");
+
+    bool fGenerate = true;
+    if (request.params.size() > 0)
+        fGenerate = request.params[0].get_bool();
+
+    if (request.params.size() > 1)
+    {
+        int nGenProcLimit = request.params[1].get_int();
+        gArgs.ForceSetArg("-genproclimit", itostr(nGenProcLimit));
+        if (nGenProcLimit == 0)
+            fGenerate = false;
+    }
+    gArgs.ForceSetArg("-gen", fGenerate ? "1" : "0");
+
+    GenerateBitcoins(fGenerate, pwallet);
+    return UniValue::VNULL;
+	
+}
 
 UniValue setsievesize(const JSONRPCRequest& request)
 {
@@ -247,6 +277,8 @@ UniValue getmininginfo(const JSONRPCRequest& request)
     obj.push_back(Pair("difficulty",       getdifficulty(request)));
     //obj.push_back(Pair("networkhashps",    getnetworkhashps(request)));
     obj.push_back(Pair("pooledtx",         (uint64_t)mempool.size()));
+    obj.push_back(Pair("generate",      (bool)gArgs.GetBoolArg("-gen", false))); //DATACOIN ADDED
+    obj.push_back(Pair("genproclimit",  (int)gArgs.GetArg("-genproclimit", -1))); //DATACOIN ADDED
     obj.push_back(Pair("sieveextensions",(int)nSieveExtensions));
     obj.push_back(Pair("sievefilterprimes",(int)nSieveFilterPrimes));
     obj.push_back(Pair("sievesize",     (int)nSieveSize));
@@ -1015,6 +1047,7 @@ static const CRPCCommand commands[] =
     { "mining",             "getblocktemplate",       &getblocktemplate,       {"template_request"} },
     { "mining",             "submitblock",            &submitblock,            {"hexdata","dummy"} },
 
+    { "mining",             "setgenerate",            &setgenerate,            {"generate", "genproclimit"} },
     { "mining",             "getsievesize",           &getsievesize,           {} },
     { "mining",             "setsievesize",           &setsievesize,           {"sievesize"} },
     { "mining",             "getsievefilterprimes",   &getsievefilterprimes,   {} },

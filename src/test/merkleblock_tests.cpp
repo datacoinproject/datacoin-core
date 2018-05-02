@@ -22,10 +22,10 @@ BOOST_AUTO_TEST_CASE(merkleblock_construct_from_txids_found)
     std::set<uint256> txids;
 
     // Last txn in block.
-    uint256 txhash1 = uint256S("0x74d681e0e03bafa802c8aa084379aa98d9fcd632ddc2ed9782b586ec87451f20");
+    uint256 txhash1 = uint256S("0x83b652121efea87426658ca1b057f286df55230b6bc74bf54de9362c7878fd9e");
 
     // Second txn in block.
-    uint256 txhash2 = uint256S("0xf9fc751cb7dc372406a9f8d738d5e6f8f63bab71986a39cf36ee70ee17036d07");
+    uint256 txhash2 = uint256S("0xa8f0226e82147c6d6139991a493a0efe977e18494b546bb87c51dd304607382c");
 
     txids.insert(txhash1);
     txids.insert(txhash2);
@@ -48,7 +48,7 @@ BOOST_AUTO_TEST_CASE(merkleblock_construct_from_txids_found)
     BOOST_CHECK_EQUAL(vIndex[0], 1);
 
     BOOST_CHECK_EQUAL(vMatched[1].ToString(), txhash1.ToString());
-    BOOST_CHECK_EQUAL(vIndex[1], 8);
+    BOOST_CHECK_EQUAL(vIndex[1], 6);
 }
 
 

@@ -161,6 +161,10 @@ static std::unique_ptr<ECCVerifyHandle> globalVerifyHandle;
 
 void Interrupt(boost::thread_group& threadGroup)
 {
+    //DATACOIN MINER uncomment?
+    // Primecoin: allow miner threads to exit gracefully 
+    if(gArgs.GetBoolArg("-gen", false)) GenerateBitcoins(false, NULL);
+
     InterruptHTTPServer();
     InterruptHTTPRPC();
     InterruptRPC();
@@ -169,9 +173,6 @@ void Interrupt(boost::thread_group& threadGroup)
     if (g_connman)
         g_connman->Interrupt();
 	
-	//TODO: datacoin. uncomment?
-    // Primecoin: allow miner threads to exit gracefully 
-    if(gArgs.GetBoolArg("-gen", false)) GenerateBitcoins(false, NULL);
 
     threadGroup.interrupt_all();
 }

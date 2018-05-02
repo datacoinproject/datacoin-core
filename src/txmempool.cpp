@@ -980,7 +980,7 @@ const CTxMemPool::setEntries & CTxMemPool::GetMemPoolChildren(txiter entry) cons
     return it->second.children;
 }
 
-CFeeRate CTxMemPool::GetMinFee(size_t sizelimit) const { //TODO: Datacoin. allow free == false
+CFeeRate CTxMemPool::GetMinFee(size_t sizelimit) const { //DATACOIN FEE allow free == false
     LOCK(cs);
     if (!blockSinceLastRollingFeeBump || rollingMinimumFeeRate == 0)
         return CFeeRate(llround(rollingMinimumFeeRate));

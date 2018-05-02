@@ -233,8 +233,8 @@ BOOST_AUTO_TEST_CASE(versionbits_test)
 
 BOOST_AUTO_TEST_CASE(versionbits_computeblockversion)
 {
-	//TODO: DATACOIN. В DTC другой Period. Если хочется проверить точные границы
-	// - нужно переделать числа далее
+    //DATACOIN CHANGED В DTC другой Period. Если хочется проверить точные границы
+    // - нужно переделать числа далее
     // Check that ComputeBlockVersion will set the appropriate bit correctly
     // on mainnet.
     const auto chainParams = CreateChainParams(CBaseChainParams::MAIN);

@@ -289,14 +289,14 @@ bool CBlockTreeDB::LoadBlockIndexGuts(const Consensus::Params& consensusParams, 
                 pindexNew->nTime          = diskindex.nTime;
                 pindexNew->nBits          = diskindex.nBits;
                 pindexNew->nNonce         = diskindex.nNonce;
-				pindexNew->bnPrimeChainMultiplier = diskindex.bnPrimeChainMultiplier;
+                pindexNew->bnPrimeChainMultiplier = diskindex.bnPrimeChainMultiplier;
                 pindexNew->nStatus        = diskindex.nStatus;
                 pindexNew->nTx            = diskindex.nTx;
-				pindexNew->nDataSize      = diskindex.nDataSize;
+                pindexNew->nDataSize      = diskindex.nDataSize;
 
-				//TODO: DATACOIN. Понятно почему XPM отключили это. У них не было bnPrimeChainMultiplier.
-				//Но у нас есть. Включить? Замедлит загрузку. Замерить на сколько.
-				// Primecoin: disabled proof-of-work check for loading block index
+                //DATACOIN OPTIMIZE? Понятно почему XPM отключили это. У них не было bnPrimeChainMultiplier.
+                //Но у нас есть. Включить? Замедлит загрузку. Замерить на сколько.
+                // Primecoin: disabled proof-of-work check for loading block index
                 //if (!CheckProofOfWork(pindexNew->GetBlockHeaderHash(), pindexNew->nBits, consensusParams))
                 //    return error("%s: CheckProofOfWork failed: %s", __func__, pindexNew->ToString());
 
@@ -312,25 +312,26 @@ bool CBlockTreeDB::LoadBlockIndexGuts(const Consensus::Params& consensusParams, 
     return true;
 }
 
-bool CBlockTreeDB::ReadSyncCheckpoint(uint256& hashCheckpoint)
-{
-    return Read(std::string("hashSyncCheckpoint"), hashCheckpoint);
-}
-
-bool CBlockTreeDB::WriteSyncCheckpoint(uint256 hashCheckpoint)
-{
-    return Write(std::string("hashSyncCheckpoint"), hashCheckpoint);
-}
-
-bool CBlockTreeDB::ReadCheckpointPubKey(std::string& strPubKey)
-{
-    return Read(std::string("strCheckpointPubKey"), strPubKey);
-}
-
-bool CBlockTreeDB::WriteCheckpointPubKey(const std::string& strPubKey)
-{
-    return Write(std::string("strCheckpointPubKey"), strPubKey);
-}
+//DATACOIN CHECKPOINTSYNC
+//bool CBlockTreeDB::ReadSyncCheckpoint(uint256& hashCheckpoint)
+//{
+//    return Read(std::string("hashSyncCheckpoint"), hashCheckpoint);
+//}
+//
+//bool CBlockTreeDB::WriteSyncCheckpoint(uint256 hashCheckpoint)
+//{
+//    return Write(std::string("hashSyncCheckpoint"), hashCheckpoint);
+//}
+//
+//bool CBlockTreeDB::ReadCheckpointPubKey(std::string& strPubKey)
+//{
+//    return Read(std::string("strCheckpointPubKey"), strPubKey);
+//}
+//
+//bool CBlockTreeDB::WriteCheckpointPubKey(const std::string& strPubKey)
+//{
+//    return Write(std::string("strCheckpointPubKey"), strPubKey);
+//}
 
 
 namespace {

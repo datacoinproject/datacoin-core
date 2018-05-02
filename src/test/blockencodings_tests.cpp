@@ -15,7 +15,12 @@
 std::vector<std::pair<uint256, CTransactionRef>> extra_txn;
 
 struct RegtestingSetup : public TestingSetup {
-    RegtestingSetup() : TestingSetup(CBaseChainParams::REGTEST) {}
+    RegtestingSetup() : TestingSetup(CBaseChainParams::REGTEST) {
+			//DATACOIN ADDED
+		    // Primecoin: Generate prime table when starting up
+			GeneratePrimeTable();
+			InitPrimeMiner();
+	}
 };
 
 BOOST_FIXTURE_TEST_SUITE(blockencodings_tests, RegtestingSetup)
@@ -33,7 +38,7 @@ static CBlock BuildBlockTestCase() {
     block.nVersion = 42;
     block.hashPrevBlock = InsecureRand256();
     block.nBits = TargetFromInt(1); // 0x207fffff; //DATACOIN CHANGED
-	block.bnPrimeChainMultiplier = Params().GenesisBlock().bnPrimeChainMultiplier;//TODO: DATACOIN
+	block.bnPrimeChainMultiplier = Params().GenesisBlock().bnPrimeChainMultiplier;//DATACOIN MINER
 
     tx.vin[0].prevout.hash = InsecureRand256();
     tx.vin[0].prevout.n = 0;
@@ -49,7 +54,6 @@ static CBlock BuildBlockTestCase() {
     bool mutated;
     block.hashMerkleRoot = BlockMerkleRoot(block, &mutated);
     assert(!mutated);
-	//const CBigNum bnProbablePrime; //TODO: Datacoin. Need init
 	unsigned int nChainType;
 	unsigned int nChainLength;
     //while (!CheckProofOfWork(block.GetHeaderHash(), block.nBits, Params().GetConsensus(), bnProbablePrime, nChainType, nChainLength)) ++block.nNonce;
@@ -291,12 +295,11 @@ BOOST_AUTO_TEST_CASE(EmptyBlockRoundTripTest)
     block.nVersion = 42;
     block.hashPrevBlock = InsecureRand256();
     block.nBits = TargetFromInt(1); // 0x207fffff; //DATACOIN CHANGED
-	block.bnPrimeChainMultiplier = Params().GenesisBlock().bnPrimeChainMultiplier;//TODO: DATACOIN
+	block.bnPrimeChainMultiplier = Params().GenesisBlock().bnPrimeChainMultiplier;//DATACOIN MINER
 
     bool mutated;
     block.hashMerkleRoot = BlockMerkleRoot(block, &mutated);
     assert(!mutated);
-	//const CBigNum bnProbablePrime; //TODO: Datacoin. Need init
 	unsigned int nChainType;
 	unsigned int nChainLength;
     //while (!CheckProofOfWork(block.GetHeaderHash(), block.nBits, Params().GetConsensus(), bnProbablePrime, nChainType, nChainLength)) ++block.nNonce;

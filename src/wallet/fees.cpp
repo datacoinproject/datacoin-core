@@ -20,7 +20,7 @@ CAmount GetRequiredFee(unsigned int nTxBytes)
 
 
 CAmount GetMinimumFee(unsigned int nTxBytes, const CCoinControl& coin_control, const CTxMemPool& pool, const CBlockPolicyEstimator& estimator, FeeCalculation *feeCalc)
-{ //TODO: Datacoin. allow free == false
+{ //DATACOIN FEE allow free == false
     /* User control of how to calculate fee uses the following parameter precedence:
        1. coin_control.m_feerate
        2. coin_control.m_confirm_target
@@ -73,7 +73,7 @@ CAmount GetMinimumFee(unsigned int nTxBytes, const CCoinControl& coin_control, c
         fee_needed = maxTxFee;
         if (feeCalc) feeCalc->reason = FeeReason::MAXTXFEE;
     }
-	//TODO: DATACOIN. не сетевое правило. можно вернуть fee_needed, но тогда позаботиться о min relay fee
+	//DATACOIN FEE не сетевое правило. можно вернуть fee_needed, но тогда позаботиться о min relay fee
     return std::max(fee_needed, MIN_TX_FEE); 
 }
 

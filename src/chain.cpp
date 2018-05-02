@@ -132,9 +132,9 @@ arith_uint256 GetBlockProof(const CBlockIndex& block)
 //    // as bnTarget+1, it is equal to ((2**256 - bnTarget - 1) / (bnTarget+1)) + 1,
 //    // or ~bnTarget / (bnTarget+1) + 1.
 //    return (~bnTarget / (bnTarget + 1)) + 1;
-	//TODO: DATACOIN. 
-	//return TargetGetLength(block.nBits)+1;
-	    // Primecoin: 
+    //DATACOIN CHANGED
+    //return TargetGetLength(block.nBits)+1;
+    // Primecoin: 
     // Difficulty multiplier of extra prime is estimated by nWorkTransitionRatio
     // Difficulty multiplier of fractional is estimated by
     //   r = 1/TransitionRatio
@@ -151,7 +151,7 @@ arith_uint256 GetBlockProof(const CBlockIndex& block)
     CBigNum bnWork = CBigNum(1) << nWorkExp;
     bnWork *= ((uint64_t) nWorkTransitionRatio) * nFractionalDifficulty;
     bnWork /= (((uint64_t) nWorkTransitionRatio - 1) * nFractionalDifficultyMin + nFractionalDifficulty);
-    return UintToArith256(bnWork.getuint256()); //TODO: DATACOIN. Оптимизировать возвращение arith_uint256?
+    return UintToArith256(bnWork.getuint256()); //DATACOIN OPTIMIZE? Оптимизировать возвращение arith_uint256?
 }
 
 int64_t GetBlockProofEquivalentTime(const CBlockIndex& to, const CBlockIndex& from, const CBlockIndex& tip, const Consensus::Params& params)

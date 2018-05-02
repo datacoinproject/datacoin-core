@@ -1822,18 +1822,28 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
 
     if (!fJustCheck)
     {
+        //DATACOIN OPTIMIZE?
+        //Переместить этот расчет туда же где и nChainWork и nChainTx?
         // primecoin: track money supply
         pindex->nMoneySupply = (pindex->pprev? pindex->pprev->nMoneySupply : 0) + nValueOut - nValueIn;
-        CDiskBlockIndex blockindex(pindex);
-		//TODO: Datacoin. Is it needed ?!!!
-        //if (!pblocktree->WriteBlockIndex(blockindex))
-        //    return AbortNode(state, "Failed to write block index for moneysupply");
+        //CDiskBlockIndex blockindex(pindex);
+        setDirtyBlockIndex.insert(pindex);
+        //CAmount blockReward = nFees + GetBlockSubsidy(pindex->nBits, chainparams.GetConsensus())- block.vtx[0]->GetMinFee() + MIN_TX_FEE;
+        //LogPrintf("NEW nMoneySupply=%llu delta=%llu | blockReward=%llu: +nFees=%llu +BlockSubsidy=%llu -TXMinFee=%llu +MIN_TX_FEE=%llu\n",
+        //    (int64_t)pindex->nMoneySupply, (int64_t)nValueOut - nValueIn, 
+        //    (int64_t)blockReward, (int64_t)nFees, (int64_t)GetBlockSubsidy(pindex->nBits,chainparams.GetConsensus()),
+        //    (int64_t)block.vtx[0]->GetMinFee(), (int64_t)MIN_TX_FEE);
     }
 
 
     int64_t nTime3 = GetTimeMicros(); nTimeConnect += nTime3 - nTime2;
     LogPrint(BCLog::BENCH, "      - Connect %u transactions: %.2fms (%.3fms/tx, %.3fms/txin) [%.2fs (%.2fms/blk)]\n", (unsigned)block.vtx.size(), MILLI * (nTime3 - nTime2), MILLI * (nTime3 - nTime2) / block.vtx.size(), nInputs <= 1 ? 0 : MILLI * (nTime3 - nTime2) / (nInputs-1), nTimeConnect * MICRO, nTimeConnect * MILLI / nBlocksTotal);
 
+    //DATACOIN OPTIMIZE?
+    //Очень странный код. По сути майнер создает vout = nFees + GetBlockSubsidy, но тут иное условие на прием.
+    //Расхождение наступит при размере нулевой (coinbase) транзакции >=1000 байт. Такие блоки перестанут приниматься.
+    //Убрать - block.vtx[0]->GetMinFee() + MIN_TX_FEE ?
+    //DATACOIN SEGWIT Такое может произойти при WITNESS, когда в нулевую транзакцию понапихают всякое?
     CAmount blockReward = nFees + GetBlockSubsidy(pindex->nBits, chainparams.GetConsensus())- block.vtx[0]->GetMinFee() + MIN_TX_FEE;
     if (block.vtx[0]->GetValueOut() > blockReward)
         return state.DoS(100,
@@ -2081,7 +2091,7 @@ void static UpdateTip(CBlockIndex *pindexNew, const CChainParams& chainParams) {
     //  DateTimeStrFormat("%Y-%m-%d %H:%M:%S", chainActive.Tip()->GetBlockTime()),
     //  GuessVerificationProgress(chainParams.TxData(), chainActive.Tip()), pcoinsTip->DynamicMemoryUsage() * (1.0 / (1<<20)), pcoinsTip->GetCacheSize());
 	
-	//TODO: DATACOIN. Времено отключил сообщение. Во время тестов приходится создавать длинные цепи. Что засоряет вывод.
+	//DATACOIN CHANGED Времено отключил сообщение. Во время тестов приходится создавать длинные цепи. Что засоряет вывод.
 	uint256 nBlockWork = ArithToUint256(pindexNew->nChainWork - (pindexNew->pprev? pindexNew->pprev->nChainWork : arith_uint256(0)));
 	if(fReindex || IsInitialBlockDownload()) {
 		LogPrintf("HEIGHT=%d OK",	pindexNew->nHeight); //Бережный размер лога при полном реиндексе
@@ -2643,20 +2653,22 @@ bool ResetBlockFailureFlags(CBlockIndex *pindex) {
     return true;
 }
 
-static CBlockIndex* AddToBlockIndex(const CBlockHeader& block, const uint256* phash, bool isFullBlock = false) //TODO: Datacoin. костыль. block обязан быть ссылкой на полный блок если isFullBlock == true
+static CBlockIndex* AddToBlockIndex(const CBlockHeader& block, const uint256* phash, bool isFullBlock = false) //DATACOIN OLDCLIENT костыль. block обязан быть ссылкой на полный блок если isFullBlock == true
 {
     // Check for duplicate
     uint256 hash = phash ? *phash : block.GetHash(); //DATACOIN CHANGED
     BlockMap::iterator it = mapBlockIndex.find(hash);
     if (it != mapBlockIndex.end())
-	{	
-		CBlockIndex* pindexOld = it->second;
-		if ( isFullBlock && pindexOld->nPrimeChainLength==0 && pindexOld->nPrimeChainType==0 )
-		{	auto& fBlock = static_cast<const CBlock&>(block);
-			pindexOld->nPrimeChainType = fBlock.nPrimeChainType;
-			pindexOld->nPrimeChainLength = fBlock.nPrimeChainLength;
-			pindexOld->nWorkTransition = EstimateWorkTransition((pindexOld->pprev ? pindexOld->pprev->nWorkTransition : TargetGetInitial()), fBlock.nBits, fBlock.nPrimeChainLength);
-		}
+    {	
+        CBlockIndex* pindexOld = it->second;
+	if (isFullBlock && pindexOld->nPrimeChainLength==0 && pindexOld->nPrimeChainType==0 )
+        {
+            auto& fBlock = static_cast<const CBlock&>(block);
+            pindexOld->nPrimeChainType = fBlock.nPrimeChainType;
+            pindexOld->nPrimeChainLength = fBlock.nPrimeChainLength;
+            pindexOld->nWorkTransition = EstimateWorkTransition((pindexOld->pprev ? pindexOld->pprev->nWorkTransition : TargetGetInitial()), fBlock.nBits, fBlock.nPrimeChainLength);
+            pindexOld->bnPrimeChainMultiplier = fBlock.bnPrimeChainMultiplier;
+        }
         return pindexOld;
 	}
 	
@@ -2677,16 +2689,18 @@ static CBlockIndex* AddToBlockIndex(const CBlockHeader& block, const uint256* ph
     }
     pindexNew->nTimeMax = (pindexNew->pprev ? std::max(pindexNew->pprev->nTimeMax, pindexNew->nTime) : pindexNew->nTime);
     pindexNew->nChainWork = (pindexNew->pprev ? pindexNew->pprev->nChainWork : 0) + GetBlockProof(*pindexNew);
-	//TODO: Datacoin. these data unavailable in block header!!!
+    //DATACOIN OLDCLIENT these data unavailable in old client block header!!!
     //pindexNew->nPrimeChainType = block.nPrimeChainType;
     //pindexNew->nPrimeChainLength = block.nPrimeChainLength;
     //pindexNew->nWorkTransition = EstimateWorkTransition((pindexNew->pprev ? pindexNew->pprev->nWorkTransition : TargetGetInitial()), block.nBits, block.nPrimeChainLength);
-	if ( isFullBlock )
-	{	auto& fBlock = static_cast<const CBlock&>(block);
-		pindexNew->nPrimeChainType = fBlock.nPrimeChainType;
-		pindexNew->nPrimeChainLength = fBlock.nPrimeChainLength;
-		pindexNew->nWorkTransition = EstimateWorkTransition((pindexNew->pprev ? pindexNew->pprev->nWorkTransition : TargetGetInitial()), fBlock.nBits, fBlock.nPrimeChainLength);
-	}
+    if ( isFullBlock )
+    {
+        auto& fBlock = static_cast<const CBlock&>(block);
+        pindexNew->nPrimeChainType = fBlock.nPrimeChainType;
+        pindexNew->nPrimeChainLength = fBlock.nPrimeChainLength;
+        pindexNew->nWorkTransition = EstimateWorkTransition((pindexNew->pprev ? pindexNew->pprev->nWorkTransition : TargetGetInitial()), fBlock.nBits, fBlock.nPrimeChainLength);
+        pindexNew->bnPrimeChainMultiplier = fBlock.bnPrimeChainMultiplier;
+    }
 		
 	pindexNew->RaiseValidity(BLOCK_VALID_TREE);
     if (pindexBestHeader == nullptr || pindexBestHeader->nChainWork < pindexNew->nChainWork)
@@ -2857,9 +2871,9 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
     if (block.fChecked)
         return true;
 
-	//TODO: DATACOIN Add CheckPOW???
+     //DATACOIN CHANGED
     // Primecoin: proof of work is checked in ProcessNewBlock()
-	// Check that the header is valid (particularly PoW).  This is mostly
+    // Check that the header is valid (particularly PoW).  This is mostly
     // redundant with the call in AcceptBlockHeader.
     //if (!CheckBlockHeader(block, state, consensusParams, fCheckPOW))
     //    return false;
@@ -2917,7 +2931,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
 
 bool IsWitnessEnabled(const CBlockIndex* pindexPrev, const Consensus::Params& params)
 {
-	return false; //TODO: Datacoin Segwit ?
+    return false; //DATACOIN SEGWIT Segwit ?
     LOCK(cs_main);
     return (VersionBitsState(pindexPrev, params, Consensus::DEPLOYMENT_SEGWIT, versionbitscache) == THRESHOLD_ACTIVE);
 }
@@ -2959,7 +2973,7 @@ std::vector<unsigned char> GenerateCoinbaseCommitment(CBlock& block, const CBloc
             uint256 witnessroot = BlockWitnessMerkleRoot(block, nullptr);
             CHash256().Write(witnessroot.begin(), 32).Write(ret.data(), 32).Finalize(witnessroot.begin());
             CTxOut out;
-            out.nValue = 0; //TODO: Datacoin =MIN_TXOUT_AMOUNT ?
+            out.nValue = 0; //DATACOIN SEGWIT =MIN_TXOUT_AMOUNT ?
             out.scriptPubKey.resize(38);
             out.scriptPubKey[0] = OP_RETURN;
             out.scriptPubKey[1] = 0x24;
@@ -3035,18 +3049,18 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
     if (block.GetBlockTime() > nAdjustedTime + MAX_FUTURE_BLOCK_TIME)
         return state.Invalid(false, REJECT_INVALID, "time-too-new", "block timestamp too far in the future");
 
-	//TODO: Datacoin version control
-	//DATACOIN CHECKPOINTSYNC
+    //DATACOIN CHECKPOINTSYNC
     //// ppcoin: check that the block satisfies synchronized checkpoint
     //if (IsSyncCheckpointEnforced() // checkpoint enforce mode
     //    && !CheckSyncCheckpoint(block.GetHash(), pindexPrev))
     //    return error("AcceptBlock() : rejected by synchronized checkpoint");
+    //DATACOIN OLDCLIENT version control
     // Primecoin: block version starts from 2
     if (block.nVersion < 2)
         return state.Invalid(error("AcceptBlock() : rejected nVersion=1 block"));
 	
-	//TODO: Datacoin
-	/*
+    //DATACOIN OLDCLIENT
+    /*
     // Reject outdated version blocks when 95% (75% on testnet) of the network has upgraded:
     // check for version 2, 3 and 4 upgrades
     if((block.nVersion < 2 && nHeight >= consensusParams.BIP34Height) ||
@@ -3054,7 +3068,7 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
        (block.nVersion < 4 && nHeight >= consensusParams.BIP65Height))
             return state.Invalid(false, REJECT_OBSOLETE, strprintf("bad-version(0x%08x)", block.nVersion),
                                  strprintf("rejected nVersion=0x%08x block", block.nVersion));
-	*/
+    */
 
     return true;
 }
@@ -3140,7 +3154,7 @@ static bool ContextualCheckBlock(const CBlock& block, CValidationState& state, c
     return true;
 }
 
-static bool AcceptBlockHeader(const CBlockHeader& block, const uint256* phash, CValidationState& state, const CChainParams& chainparams, CBlockIndex** ppindex, bool isFullBlock = false) //TODO: Datacoin. костыль. block обязан быть ссылкой на полный блок если isFullBlock == true
+static bool AcceptBlockHeader(const CBlockHeader& block, const uint256* phash, CValidationState& state, const CChainParams& chainparams, CBlockIndex** ppindex, bool isFullBlock = false) //DATACOIN OLDCLIENT костыль. block обязан быть ссылкой на полный блок если isFullBlock == true
 {
     AssertLockHeld(cs_main);
     // Check for duplicate
@@ -3156,10 +3170,12 @@ static bool AcceptBlockHeader(const CBlockHeader& block, const uint256* phash, C
 			CBlockIndex*& pindexOld = pindex;
 			if ( isFullBlock && pindexOld->nPrimeChainLength==0 && pindexOld->nPrimeChainType==0 )
 			{	auto& fBlock = static_cast<const CBlock&>(block);
-				pindexOld->nPrimeChainType = fBlock.nPrimeChainType;  //DATACOIN ADDED Доустанавливаем поля
-				pindexOld->nPrimeChainLength = fBlock.nPrimeChainLength;
-				pindexOld->nWorkTransition = EstimateWorkTransition((pindexOld->pprev ? pindexOld->pprev->nWorkTransition : TargetGetInitial()), fBlock.nBits, fBlock.nPrimeChainLength);
-			}
+		        if (!CheckBlockHeader(block, state, chainparams.GetConsensus(), true))
+                            return error("%s: Consensus::CheckBlockHeader: %s, %s", __func__, hash.ToString(), FormatStateMessage(state));
+                                pindexOld->nPrimeChainType = fBlock.nPrimeChainType;  //DATACOIN ADDED Доустанавливаем поля //DATACOIN OLDCLIENT
+                                pindexOld->nPrimeChainLength = fBlock.nPrimeChainLength;
+                                pindexOld->nWorkTransition = EstimateWorkTransition((pindexOld->pprev ? pindexOld->pprev->nWorkTransition : TargetGetInitial()), fBlock.nBits, fBlock.nPrimeChainLength);
+                        }
 			
             if (ppindex)
                 *ppindex = pindex;
@@ -3310,7 +3326,7 @@ static bool AcceptBlock(const std::shared_ptr<const CBlock>& pblock, CValidation
     return true;
 }
 
-//TODO: DATACOIN. Not used primecoin function
+//DATACOIN WASTED Not used primecoin function
 /*
 // Get block work value for main chain protocol
 C_BigNum CBlockIndex::GetBlockWork() const
@@ -3346,12 +3362,11 @@ bool ProcessNewBlock(const CChainParams& chainparams, const std::shared_ptr<cons
         bool ret = CheckBlock(*pblock, state, chainparams.GetConsensus());
 
 		// Check proof of work matches claimed amount
-		//TODO: DATACOIN
+		//DATACOIN ADDED
 		//Биткоин вообще тут не проверяет POW
 		//Как же тогда отказывать фейковым новым блокам из сети?
-		uint32_t nPrimeChainType;
-		uint32_t nPrimeChainLength;
-		if (!CheckProofOfWork(pblock->GetHeaderHash(), pblock->nBits, chainparams.GetConsensus(), pblock->bnPrimeChainMultiplier, nPrimeChainType, nPrimeChainLength))
+		//Check POW and !!!SET pblock->nPrimeChainType, pblock->nPrimeChainLength HERE!!!
+		if (!CheckProofOfWork(pblock->GetHeaderHash(), pblock->nBits, chainparams.GetConsensus(), pblock->bnPrimeChainMultiplier, pblock->nPrimeChainType, pblock->nPrimeChainLength))
 			return state.DoS(100, error("ProcessNewBlock() : proof of work failed"));
 
 
@@ -4607,7 +4622,7 @@ bool DumpMempool(void)
 
 //! Guess how far we are in the verification process at the given block index
 double GuessVerificationProgress(const ChainTxData& data, CBlockIndex *pindex) {
-//TODO: DATACOIN. Пока синхронизация не будет как у нового клиента, делаем
+//DATACOIN DELETE? Пока синхронизация не будет как у нового клиента, делаем
 //предположение на основе обычного времени.
 //	int64_t nNowTime = time(nullptr);
 //	int64_t nGenesisTime = data.nTime;
@@ -4619,7 +4634,7 @@ double GuessVerificationProgress(const ChainTxData& data, CBlockIndex *pindex) {
 //	//data.nTime время первого блока
 //	return ((double)nBlockTime-nGenesisTime)/((double)nNowTime-nGenesisTime);
 
-//TODO: DATACOIN
+//DATACOIN OPTIMIZE?
 //Подобный код позволяет получать размер файлов на диске.
 //CBlockIndex *pindex содержит номер текущего файла
 //в ChainTxData в chainparams можно затащить размер файлов блокчейна
@@ -4652,7 +4667,7 @@ double GuessVerificationProgress(const ChainTxData& data, CBlockIndex *pindex) {
 
 	double fTxTotal;
 
-	// 1 TX без Data: ~ 497 bytes    //TODO: DATACOIN. На самом деле транзакции очень разных размеров.
+	// 1 TX без Data: ~ 497 bytes    //DATACOIN OPTIMIZE? На самом деле транзакции очень разных размеров.
     if (pindex->nChainTx <= data.nTxCount) {
         fTxTotal = data.nTxCount*497 + data.nDataSize + 
 			(nNow - data.nTime) * (data.dTxRate*497 + data.dDataRate);

@@ -16,14 +16,26 @@
 
 #include <boost/test/unit_test.hpp>
 
-static const std::string strSecret1 = "5HxWvvfubhXpYYpS3tJkw6fq9jE9j18THftkZjHHfmFiWtmAbrj";
-static const std::string strSecret2 = "5KC4ejrDjv152FGwP386VD1i2NYc5KkfSMyv1nGy1VGDxGHqVY3";
-static const std::string strSecret1C = "Kwr371tjA9u2rFSMZjTNun2PXXP3WPZu2afRHTcta6KxEUdm1vEw";
-static const std::string strSecret2C = "L3Hq7a8FEQwJkW1M2GNKDW28546Vp5miewcCzSqUD9kCAXrJdS3g";
-static const std::string addr1 = "1QFqqMUD55ZV3PJEJZtaKCsQmjLT6JkjvJ";
-static const std::string addr2 = "1F5y5E5FMc5YzdJtB9hLaUe43GDxEKXENJ";
-static const std::string addr1C = "1NoJrossxPBKfCHuJXT4HadJrXRE9Fxiqs";
-static const std::string addr2C = "1CRj2HyM1CXWzHAXLQtiGLyggNT9WQqsDs";
+//DATACOIN ADDED //DATACOIN CHANGED об набора адресов работают. 
+//Первый набор сделал из изначально не compressed ключей
+//static const std::string strSecret1 = "6K1gCRe1HEKgLgJs1GGPKhdg1UFfhRsPVfKBv4bMwvg1jGMB61q";
+//static const std::string strSecret2 = "6KEjBhru5NKsZZbY8p1BcB9788ezwbF3YDJUdFwkAVrzYxNYs7x";
+//static const std::string strSecret1C = "QSVz1RkLEdoSdrVqiANuXYLsB5HjoSmQHW7HBCrfTRuCDA4r1JCV";
+//static const std::string strSecret2C = "QTVbCFMErH8JAisSRUTopFkn2Unijx8zCmJ8w2xdWvPf1Z6Bn21T";
+//static const std::string addr1 = "DS4vCWCVGiB8VUBXYweexi2YdYdFT5w499";
+//static const std::string addr2 = "DEWDrTsA9dCxhyS1Xo5DVWiWoeww8cVBQq";
+//static const std::string addr1C = "DK1HiS2f1aGosPMQGJEa1pDKJfDH29Y2Ng";
+//static const std::string addr2C = "DEMAtHe1PdvxcaLY6kB1Nwtpkpm6xrY6mU";
+
+//Второй набор сделал из изначально compressed ключей
+static const std::string strSecret1 = "6Kuvgivks4QNdVK19ComSa7x9K9UwPXeUay4RVRwsrMcqMMn4qi";
+static const std::string strSecret2 = "6JcYxzHZrMzNA2CZp5P7P11eBHDJctd5jhbrYMHzdT4R7vr7DmD";
+static const std::string strSecret1C = "QWUbxL4Gbx2AU3xTdD7R9sBgPh6SK4SGQkvS76V7DSr1AR1EENEY";
+static const std::string strSecret2C = "QQjv67r7zseCNpJ3pnLbA73q6NZJmQrFuUCqfNa1Mt25TLW6Z67z";
+static const std::string addr1 = "DKNzJgvhfoSV49LvJdrGK3mWrRogjgVoWW";
+static const std::string addr2 = "DCikyYEPP52qFbKkN99rLGaxocCQuxUrTw";
+static const std::string addr1C = "DDqueAuaKascEfAkS5xzp6eX1GBuVPAoGu";
+static const std::string addr2C = "DU5m2wedme2yVZewkG3yXAcgTfBQbp4kiU";
 
 static const std::string strAddressBad = "1HV9Lc3sNHZxwj4Zk6fB38tEmBryq2cBiF";
 
@@ -52,6 +64,25 @@ BOOST_AUTO_TEST_CASE(key_test1)
     CPubKey pubkey2  = key2. GetPubKey();
     CPubKey pubkey1C = key1C.GetPubKey();
     CPubKey pubkey2C = key2C.GetPubKey();
+	
+	//Так можно получить compressed и не compressed пары secret
+	//CKey tmp; CBitcoinSecret tmpSec;
+	//tmp.Set(key1.begin(), key1.end(), false); tmpSec.SetKey(tmp);
+	//std::cerr << "\n" << tmpSec.ToString() << "\n";
+	//tmp.Set(key2.begin(), key2.end(), false); tmpSec.SetKey(tmp);
+	//std::cerr << "\n" << tmpSec.ToString() << "\n";
+	//tmp.Set(key1C.begin(), key1C.end(), false); tmpSec.SetKey(tmp);
+	//std::cerr << "\n" << tmpSec.ToString() << "\n";
+	//tmp.Set(key2C.begin(), key2C.end(), false); tmpSec.SetKey(tmp);
+	//std::cerr << "\n" << tmpSec.ToString() << "\n";
+	//tmp.Set(key1.begin(), key1.end(), true); tmpSec.SetKey(tmp);
+	//std::cerr << "\n" << tmpSec.ToString() << "\n";
+	//tmp.Set(key2.begin(), key2.end(), true); tmpSec.SetKey(tmp);
+	//std::cerr << "\n" << tmpSec.ToString() << "\n";
+	//tmp.Set(key1C.begin(), key1C.end(), true); tmpSec.SetKey(tmp);
+	//std::cerr << "\n" << tmpSec.ToString() << "\n";
+	//tmp.Set(key2C.begin(), key2C.end(), true); tmpSec.SetKey(tmp);
+	//std::cerr << "\n" << tmpSec.ToString() << "\n";	
 
     BOOST_CHECK(key1.VerifyPubKey(pubkey1));
     BOOST_CHECK(!key1.VerifyPubKey(pubkey1C));
@@ -142,19 +173,25 @@ BOOST_AUTO_TEST_CASE(key_test1)
     BOOST_CHECK(key1.Sign(hashMsg, detsig));
     BOOST_CHECK(key1C.Sign(hashMsg, detsigc));
     BOOST_CHECK(detsig == detsigc);
-    BOOST_CHECK(detsig == ParseHex("304402205dbbddda71772d95ce91cd2d14b592cfbc1dd0aabd6a394b6c2d377bbe59d31d022014ddda21494a4e221f0824f0b8b924c43fa43c0ad57dccdaa11f81a6bd4582f6"));
+	//std::cerr << "\n" << HexStr(detsig) << "\n"; 
+    BOOST_CHECK(detsig == ParseHex("3045022100e5b1ad2350d415cfc3d13025e5769e03f27117e62ab49eff991a8da141a25b7c02202e51cad7a2ea23a12618f4cba961aa10af432da6b62508a284819fe11ffe8b72"));
     BOOST_CHECK(key2.Sign(hashMsg, detsig));
     BOOST_CHECK(key2C.Sign(hashMsg, detsigc));
     BOOST_CHECK(detsig == detsigc);
-    BOOST_CHECK(detsig == ParseHex("3044022052d8a32079c11e79db95af63bb9600c5b04f21a9ca33dc129c2bfa8ac9dc1cd5022061d8ae5e0f6c1a16bde3719c64c2fd70e404b6428ab9a69566962e8771b5944d"));
+	//std::cerr << "\n" << HexStr(detsig) << "\n"; 
+    BOOST_CHECK(detsig == ParseHex("3044022079c109267004181a75a16c24d75ee181f1a8045eacb3dc7ab1085c98fbdb57f80220360247cc6af54f18b6ed5c68709028628c93035cc31818132fdcfb3da2a7029b"));
     BOOST_CHECK(key1.SignCompact(hashMsg, detsig));
     BOOST_CHECK(key1C.SignCompact(hashMsg, detsigc));
-    BOOST_CHECK(detsig == ParseHex("1c5dbbddda71772d95ce91cd2d14b592cfbc1dd0aabd6a394b6c2d377bbe59d31d14ddda21494a4e221f0824f0b8b924c43fa43c0ad57dccdaa11f81a6bd4582f6"));
-    BOOST_CHECK(detsigc == ParseHex("205dbbddda71772d95ce91cd2d14b592cfbc1dd0aabd6a394b6c2d377bbe59d31d14ddda21494a4e221f0824f0b8b924c43fa43c0ad57dccdaa11f81a6bd4582f6"));
+	//std::cerr << "\n" << HexStr(detsig) << "\n"; 
+    BOOST_CHECK(detsig == ParseHex("1ce5b1ad2350d415cfc3d13025e5769e03f27117e62ab49eff991a8da141a25b7c2e51cad7a2ea23a12618f4cba961aa10af432da6b62508a284819fe11ffe8b72"));
+	//std::cerr << "\n" << HexStr(detsigc) << "\n"; 
+    BOOST_CHECK(detsigc == ParseHex("20e5b1ad2350d415cfc3d13025e5769e03f27117e62ab49eff991a8da141a25b7c2e51cad7a2ea23a12618f4cba961aa10af432da6b62508a284819fe11ffe8b72"));
     BOOST_CHECK(key2.SignCompact(hashMsg, detsig));
     BOOST_CHECK(key2C.SignCompact(hashMsg, detsigc));
-    BOOST_CHECK(detsig == ParseHex("1c52d8a32079c11e79db95af63bb9600c5b04f21a9ca33dc129c2bfa8ac9dc1cd561d8ae5e0f6c1a16bde3719c64c2fd70e404b6428ab9a69566962e8771b5944d"));
-    BOOST_CHECK(detsigc == ParseHex("2052d8a32079c11e79db95af63bb9600c5b04f21a9ca33dc129c2bfa8ac9dc1cd561d8ae5e0f6c1a16bde3719c64c2fd70e404b6428ab9a69566962e8771b5944d"));
+	//std::cerr << "\n" << HexStr(detsig) << "\n"; 
+    BOOST_CHECK(detsig == ParseHex("1c79c109267004181a75a16c24d75ee181f1a8045eacb3dc7ab1085c98fbdb57f8360247cc6af54f18b6ed5c68709028628c93035cc31818132fdcfb3da2a7029b"));
+	//std::cerr << "\n" << HexStr(detsigc) << "\n"; 
+    BOOST_CHECK(detsigc == ParseHex("2079c109267004181a75a16c24d75ee181f1a8045eacb3dc7ab1085c98fbdb57f8360247cc6af54f18b6ed5c68709028628c93035cc31818132fdcfb3da2a7029b"));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

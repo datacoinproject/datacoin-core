@@ -143,7 +143,9 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "echojson", 9, "arg9" },
     { "rescanblockchain", 0, "start_height"},
     { "rescanblockchain", 1, "stop_height"},
-	{ "setsievesize", 0, "sievesize"}, // ConvertTo<boost::int64_t>(params[0]);
+    { "setgenerate", 0, "generate"}, // ConvertTo<boost::int64_t>(params[0]);
+    { "setgenerate", 1, "genproclimit"}, // ConvertTo<boost::int64_t>(params[0]);
+    { "setsievesize", 0, "sievesize"}, // ConvertTo<boost::int64_t>(params[0]);
     { "setsievefilterprimes", 0, "number_of_primes"}, // ConvertTo<boost::int64_t>(params[0]);
     { "setsieveextensions", 0, "sieveextensions"}, // ConvertTo<boost::int64_t>(params[0]);
     { "sendalert", 2, "minver"}, // ConvertTo<boost::int64_t>(params[2]);

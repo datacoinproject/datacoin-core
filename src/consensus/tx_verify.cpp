@@ -173,7 +173,7 @@ bool CheckTransaction(const CTransaction& tx, CValidationState &state, bool fChe
     CAmount nValueOut = 0;
     for (const auto& txout : tx.vout)
     {
-		//TODO: Datacoin. Accept txout nValue==0, scriptPubKey[0]==OP_RETURN, data.size()==0 ???
+		//DATACOIN SEGWIT Accept txout nValue==0, scriptPubKey[0]==OP_RETURN, data.size()==0 ???
 		//Кажется такая реализация разрешит постить пустые транзакции бесплатно.
 		//GenerateCoinbaseCommitment in validation.cpp
         //if (txout.nValue < MIN_TXOUT_AMOUNT && !(txout.nValue==0 && txout.scriptPubKey[0]==OP_RETURN && tx.data.size()==0))

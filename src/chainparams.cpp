@@ -103,18 +103,19 @@ public:
 
         // Deployment of SegWit (BIP141, BIP143, and BIP147)
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].bit = 1;
-        consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nStartTime = 999999999999ULL; //TODO: DATACOIN. отключаем SEGWIT = 1479168000; // November 15th, 2016.
-        consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nTimeout = 999999999999ULL; //TODO: DATACOIN. отключаем SEGWIT =1510704000; // November 15th, 2017.
+        consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nStartTime = 999999999999ULL; //DATACOIN SEGWIT отключаем SEGWIT = 1479168000; // November 15th, 2016.
+        consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nTimeout = 999999999999ULL; //DATACOIN SEGWIT отключаем SEGWIT =1510704000; // November 15th, 2017.
 
         // The best chain should have at least this much work.
         //consensus.nMinimumChainWork = uint256S("0x000000000000000000000000000000000000000000723d3581fe1bd55373540a");
-		//TODO: DATACOIN. Минимальная работа активной цепи. Вообще пересмотреть работу рассчитываемую как сумма работы блоков в DTC!!!
-		consensus.nMinimumChainWork = uint256S("0x00000000000000000000000000000000000000000000000000001c8b34115f40");
+        //DATACOIN CHANGED Минимальная работа активной цепи. 
+        //Загрузка блоков не начнется пока заголовки не достигнут этой работы
+        consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000000000000090000000000");
 
         // By default assume that the signatures in ancestors of this block are valid.
         consensus.defaultAssumeValid = uint256S("0x0000000000000000003b9ce759c2a087d52abc4266f8f4ebd6d768b89defa50a"); //477890
 
-		consensus.nTargetInitialLength = 7; // primecoin: initial prime chain target
+        consensus.nTargetInitialLength = 7; // primecoin: initial prime chain target
         consensus.nTargetMinLength = 6;     // primecoin: minimum prime chain target
 		
         /**
@@ -156,11 +157,11 @@ public:
         fRequireStandard = true;
         fMineBlocksOnDemand = false;
 
-		//TODO: DATACOIN. Добавить чекпоинты
+        //TODO: DATACOIN. Добавить чекпоинты
         checkpointData = (CCheckpointData) {
             {
-				{     0, consensus.hashGenesisBlock },
-				{ 72200, uint256S("0x63160677a0dce11897607d62fd6eb3f35c3c42759322c477027c2f2a439df0bc")},
+                {     0, consensus.hashGenesisBlock },
+                { 72200, uint256S("0x63160677a0dce11897607d62fd6eb3f35c3c42759322c477027c2f2a439df0bc")},
             }
         };
 
@@ -168,7 +169,7 @@ public:
             // Data as of block 88bc99151b7809d9e5983c0f762181a0bc55b72702708a6b36fe672409622f05 (height 2388277).
             1524657498, // * UNIX timestamp of last known number of transactions
             2710257,          // * total number of transactions between genesis and that timestamp
-			126324797,  // * total data size
+            126324797,  // * total data size
                         //   (the tx=... number in the SetBestChain debug.log lines)
             0.020,      // * estimated number of transactions per second after that timestamp
 			0.083       // * estimated data rate (bytes per sec)
@@ -206,8 +207,8 @@ public:
 
         // Deployment of SegWit (BIP141, BIP143, and BIP147)
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].bit = 1;
-        consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nStartTime = 999999999999ULL; //TODO: DATACOIN. отключаем SEGWIT = 1462060800; // May 1st 2016
-        consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nTimeout = 999999999999ULL; //TODO: DATACOIN. отключаем SEGWIT = 1493596800; // May 1st 2017
+        consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nStartTime = 999999999999ULL; //DATACOIN SEGWIT отключаем SEGWIT = 1462060800; // May 1st 2016
+        consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nTimeout = 999999999999ULL; //DATACOIN SEGWIT отключаем SEGWIT = 1493596800; // May 1st 2017
 
         // The best chain should have at least this much work.
 		//consensus.nMinimumChainWork = uint256S("0x00000000000000000000000000000000000000000000002830dab7f76dbb7d63");
@@ -283,9 +284,9 @@ public:
         consensus.BIP34Height = 100000000; // BIP34 has not activated on regtest (far in the future so block v1 are not rejected in tests)
         consensus.BIP34Hash = uint256();
         consensus.BIP65Height = 1351; // BIP65 activated on regtest (Used in rpc activation tests)
-		//TODO: DATACON DTC COINBASE_MATURITY=3200. Для тестов трат приходится создавать длинную цепочку.
-		//Но тест биткоина рассчитан на высоту (100) менее BIP66Height.
-		//Поэтому увеличим BIP66Height чтобы было > 3200
+        //DATACOIN CHANGED DTC COINBASE_MATURITY=3200. Для тестов трат приходится создавать длинную цепочку.
+        //Но тест биткоина рассчитан на высоту (100) менее BIP66Height.
+        //Поэтому увеличим BIP66Height чтобы было > 3200
         consensus.BIP66Height = 12510; // BIP66 activated on regtest (Used in rpc activation tests)
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.nPowTargetTimespan = 7 * 24 * 60 * 60; // a weeks
@@ -301,8 +302,8 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_CSV].nStartTime = 0;
         consensus.vDeployments[Consensus::DEPLOYMENT_CSV].nTimeout = 999999999999ULL;
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].bit = 1;
-        consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nStartTime = 999999999999ULL; //TODO: DATACOIN. отключаем SEGWIT = 0ULL; //= 0; TODO: DATACOIN. отключил сегвит на время тестов. потом нужно включить обратно
-        consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nTimeout = 999999999999ULL; //TODO: DATACOIN. отключаем SEGWIT = 999999999999ULL;
+        consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nStartTime = 999999999999ULL; //DATACOIN SEGWIT отключаем SEGWIT = 0ULL; // отключил сегвит на время тестов. потом нужно включить обратно
+        consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nTimeout = 999999999999ULL; //DATACOIN SEGWIT отключаем SEGWIT = 999999999999ULL;
 
         // The best chain should have at least this much work.
         consensus.nMinimumChainWork = uint256S("0x00");
@@ -321,7 +322,7 @@ public:
         nPruneAfterHeight = 1000;
 
 
-        genesis = CreateGenesisBlock(1385686192, 46032, TargetFromInt(1), 2, (uint64_t) 211890, COIN); //TODO: Datacoin переделать под nTargetMinLength=2, nTargetInitialLength=4
+        genesis = CreateGenesisBlock(1385686192, 46032, TargetFromInt(1), 2, (uint64_t) 211890, COIN); //DATACOIN CHANGED переделать под nTargetMinLength=2, nTargetInitialLength=4
         consensus.hashGenesisBlock = genesis.GetHash();
         assert(consensus.hashGenesisBlock == uint256S("0x3864a16a5e7c9f79f2ab2ebc41e943f342f6737b83649844f6b41334eb7e5ba8"));
         assert(genesis.hashMerkleRoot == uint256S("0xfe5d7082c24c53362f6b82211913d536677aaffafde0dcec6ff7b348ff6265f8"));
@@ -380,14 +381,14 @@ void SelectParams(const std::string& network)
     SelectBaseParams(network);
     globalChainParams = CreateChainParams(network);
 
-	//TODO: DATACOIN. Биткоин тут ничего не проверяет. Датакоин релиз тоже.
-	//Вставка этой проверки дала нежелательную круговую зависимость библиотеки common от server
-	//CValidationState state;
-	//unsigned int tmpnChainType = 0, tmpnChainLength = 0;
+    //DATACOIN CHANGED Биткоин тут ничего не проверяет. 
+    //Вставка этой проверки дала нежелательную круговую зависимость библиотеки common от server
+    //CValidationState state;
+    //unsigned int tmpnChainType = 0, tmpnChainLength = 0;
     //assert(CheckBlock(Params().GenesisBlock(), state, Params().GetConsensus(), true, true));
     //assert(CheckProofOfWork(Params().GenesisBlock().GetHeaderHash(), Params().GenesisBlock().nBits,
-	//	Params().GetConsensus(), Params().GenesisBlock().bnPrimeChainMultiplier,
-	//	tmpnChainType, tmpnChainLength));
+    //    Params().GetConsensus(), Params().GenesisBlock().bnPrimeChainMultiplier,
+    //    tmpnChainType, tmpnChainLength));
 
 }
 

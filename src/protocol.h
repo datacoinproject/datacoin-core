@@ -300,13 +300,13 @@ enum ServiceFlags : uint64_t {
  * Thus, generally, avoid calling with peerServices == NODE_NONE.
  */
 static ServiceFlags GetDesirableServiceFlags(ServiceFlags services) {
-	//TODO. DATACOIN. 
-	//we auto connect only nodes with all these flags.
-	//now there are not witness nodes
-	//Turn on NODE_WITNESS only after many nodes (especially seed nodes) 
-	// will have it
+    //DATACOIN SEGWIT 
+    //we auto connect only nodes with all these flags.
+    //now there are not witness nodes
+    //Turn on NODE_WITNESS only after many nodes (especially seed nodes) 
+    // will have it
     //return ServiceFlags(NODE_NETWORK | NODE_WITNESS);
-	return ServiceFlags(NODE_NETWORK);
+    return ServiceFlags(NODE_NETWORK);
 }
 
 /**

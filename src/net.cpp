@@ -2763,12 +2763,13 @@ CNode::~CNode()
 void CNode::AskFor(const CInv& inv)
 {
     if (mapAskFor.size() > MAPASKFOR_MAX_SZ || setAskFor.size() > SETASKFOR_MAX_SZ)
-	{	LogPrintf("CALL to AskFor FAILED. Overload.\n"); //TODO: DATACOIN.
+	{	LogPrintf("CALL to AskFor FAILED. Overload.\n"); //DATACOIN CHANGED
 		return;}
     // a peer may not have multiple non-responded queue positions for a single inv item
-    if (!setAskFor.insert(inv.hash).second)
-	{	LogPrintf("CALL to AskFor. Already asked. Skip.\n"); //TODO: DATACOIN.
-		return;}
+    if (!setAskFor.insert(inv.hash).second) {
+        LogPrintf("CALL to AskFor. Already asked. Skip.\n"); //DATACOIN CHANGED
+        return;
+    }
 
     // We're using mapAskFor as a priority queue,
     // the key is the earliest time the request can be sent

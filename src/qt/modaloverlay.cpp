@@ -79,7 +79,10 @@ void ModalOverlay::tipUpdate(int count, const QDateTime& blockDate, double nVeri
     QDateTime currentDate = QDateTime::currentDateTime();
 
     // keep a vector of samples of verification progress at height
-    blockProcessTime.push_front(qMakePair(currentDate.toMSecsSinceEpoch(), nVerificationProgress));
+	if (nVerificationProgress >= (0.01/2/100)){
+		if ( blockProcessTime.size() < 1 || (nVerificationProgress-blockProcessTime[0].second >= 0.01/2/100) )
+			blockProcessTime.push_front(qMakePair(currentDate.toMSecsSinceEpoch(), nVerificationProgress));
+	}
 
     // show progress speed if we have more then one sample
     if (blockProcessTime.size() >= 2) {
@@ -130,14 +133,21 @@ void ModalOverlay::tipUpdate(int count, const QDateTime& blockDate, double nVeri
     // estimate the number of headers left based on nPowTargetSpacing
     // and check if the gui is not aware of the best header (happens rarely)
     int estimateNumHeadersLeft = bestHeaderDate.secsTo(currentDate) / Params().GetConsensus().nPowTargetSpacing;
+    int estimateNumBlocksLeft = blockDate.secsTo(currentDate) / Params().GetConsensus().nPowTargetSpacing;
     bool hasBestHeader = bestHeaderHeight >= count;
 
+	//DATACOIN CHANGE
     // show remaining number of blocks
-    if (estimateNumHeadersLeft < HEADER_HEIGHT_DELTA_SYNC && hasBestHeader) {
+    //if (estimateNumHeadersLeft < HEADER_HEIGHT_DELTA_SYNC && hasBestHeader) {
+    //    ui->numberOfBlocksLeft->setText(QString::number(bestHeaderHeight - count));
+    //} else {
+    //    ui->numberOfBlocksLeft->setText(tr("Unknown. Syncing Headers (%1)...").arg(bestHeaderHeight));
+    //    //ui->expectedTimeLeft->setText(tr("Unknown..."));
+    //}
+	if (estimateNumHeadersLeft < HEADER_HEIGHT_DELTA_SYNC && hasBestHeader) {
         ui->numberOfBlocksLeft->setText(QString::number(bestHeaderHeight - count));
     } else {
-        ui->numberOfBlocksLeft->setText(tr("Unknown. Syncing Headers (%1)...").arg(bestHeaderHeight));
-        ui->expectedTimeLeft->setText(tr("Unknown..."));
+        ui->numberOfBlocksLeft->setText(tr("~%1, Syncing Headers (%2)...").arg(estimateNumBlocksLeft).arg(bestHeaderHeight));
     }
 }
 

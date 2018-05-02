@@ -116,7 +116,7 @@ unsigned int TargetGetFractional(unsigned int nBits);
 uint64_t TargetGetFractionalDifficulty(unsigned int nBits);
 bool TargetSetFractionalDifficulty(uint64_t nFractionalDifficulty, unsigned int& nBits);
 std::string TargetToString(unsigned int nBits);
-//TODO: DATACOIN. Возможно стоит разделить prime на prime_miner (в server) и prime (в common)
+//DATACOIN MINER Возможно стоит разделить prime на prime_miner (в server) и prime (в common)
 inline unsigned int TargetFromInt(unsigned int nLength) { return (nLength << nFractionalBits); }
 bool TargetGetMint(unsigned int nBits, uint64_t& nMint);
 bool TargetGetNext(unsigned int nBits, int64_t nInterval, int64_t nTargetSpacing, int64_t nActualSpacing, unsigned int& nBitsNext);

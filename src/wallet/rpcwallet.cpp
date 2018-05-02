@@ -3391,6 +3391,7 @@ extern UniValue sendalert(const JSONRPCRequest& request);
 extern UniValue getcheckpoint(const JSONRPCRequest& request); // in checkpointsync.cpp
 extern UniValue sendcheckpoint(const JSONRPCRequest& request);
 extern UniValue enforcecheckpoint(const JSONRPCRequest& request);
+extern UniValue setgenerate(const JSONRPCRequest& request);
 extern UniValue getsievesize(const JSONRPCRequest& request);
 extern UniValue setsievesize(const JSONRPCRequest& request);
 extern UniValue getsievefilterprimes(const JSONRPCRequest& request);

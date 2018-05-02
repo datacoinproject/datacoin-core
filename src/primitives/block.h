@@ -75,7 +75,7 @@ public:
 	// Данный хеш используется для проверки POW. Включать в хэш bnPrimeChainMultiplier нельзя
     uint256 GetHeaderHash() const
     {
-		//TODO: DATACOIN. Переделываем хеширование
+		//DATACOIN CHANGED Переделываем хеширование
 		//return Hash(BEGIN(nVersion), END(nNonce));
 		
 		//CDataStream ss(SER_GETHASH, 0);
@@ -104,8 +104,8 @@ public:
 
     // memory only
     mutable bool fChecked;
-    unsigned int nPrimeChainType;   // primecoin: chain type (memory-only)
-    unsigned int nPrimeChainLength; // primecoin: chain length (memory-only)
+    mutable unsigned int nPrimeChainType;   // primecoin: chain type (memory-only)
+    mutable unsigned int nPrimeChainLength; // primecoin: chain length (memory-only)
 
     CBlock()
     {
@@ -146,7 +146,7 @@ public:
         block.nNonce         = nNonce;
 		block.bnPrimeChainMultiplier
 							= bnPrimeChainMultiplier;
-		//TODO: DATACOIN. !!! XPM не заполяет это поле. Исправить?
+		//DATACOIN OLDCLIENT !!! XPM не заполяет это поле. Исправить?
 		//также CBlockIndex::GetBlockHeader()
 		//block.bnPrimeChainMultiplier = bnPrimeChainMultiplier; 
         return block;

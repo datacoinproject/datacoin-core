@@ -43,7 +43,7 @@ extern bool fWalletRbf;
 
 static const unsigned int DEFAULT_KEYPOOL_SIZE = 1000;
 //! -paytxfee default
-static const CAmount DEFAULT_TRANSACTION_FEE = MIN_TX_FEE; //TODO: DATACOIN надо проверить можно ли сделать плату меньше MIN_TX_FEE
+static const CAmount DEFAULT_TRANSACTION_FEE = MIN_TX_FEE; //DATACOIN FEE надо проверить можно ли сделать плату меньше MIN_TX_FEE
 //! -fallbackfee default
 static const CAmount DEFAULT_FALLBACK_FEE = MIN_TX_FEE; //DATACOIN CHANGED
 //! -m_discard_rate default
