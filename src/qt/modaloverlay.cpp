@@ -79,10 +79,10 @@ void ModalOverlay::tipUpdate(int count, const QDateTime& blockDate, double nVeri
     QDateTime currentDate = QDateTime::currentDateTime();
 
     // keep a vector of samples of verification progress at height
-	if (nVerificationProgress >= (0.01/2/100)){
-		if ( blockProcessTime.size() < 1 || (nVerificationProgress-blockProcessTime[0].second >= 0.01/2/100) )
-			blockProcessTime.push_front(qMakePair(currentDate.toMSecsSinceEpoch(), nVerificationProgress));
-	}
+    if (nVerificationProgress >= (0.01/2/100)){
+        if ( blockProcessTime.size() < 1 || (nVerificationProgress-blockProcessTime[0].second >= 0.01/2/100) )
+            blockProcessTime.push_front(qMakePair(currentDate.toMSecsSinceEpoch(), nVerificationProgress));
+    }
 
     // show progress speed if we have more then one sample
     if (blockProcessTime.size() >= 2) {
@@ -136,7 +136,7 @@ void ModalOverlay::tipUpdate(int count, const QDateTime& blockDate, double nVeri
     int estimateNumBlocksLeft = blockDate.secsTo(currentDate) / Params().GetConsensus().nPowTargetSpacing;
     bool hasBestHeader = bestHeaderHeight >= count;
 
-	//DATACOIN CHANGE
+    //DATACOIN CHANGE
     // show remaining number of blocks
     //if (estimateNumHeadersLeft < HEADER_HEIGHT_DELTA_SYNC && hasBestHeader) {
     //    ui->numberOfBlocksLeft->setText(QString::number(bestHeaderHeight - count));

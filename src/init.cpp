@@ -1685,39 +1685,39 @@ bool AppInitMain(boost::thread_group& threadGroup, CScheduler& scheduler)
     connOptions.nSendBufferMaxSize = 1000*gArgs.GetArg("-maxsendbuffer", DEFAULT_MAXSENDBUFFER);
     connOptions.nReceiveFloodSize = 1000*gArgs.GetArg("-maxreceivebuffer", DEFAULT_MAXRECEIVEBUFFER);
     connOptions.m_added_nodes = gArgs.GetArgs("-addnode");
-	
-	//TODO: DATACOIN. Ноды для синхронизации (не сид ноды)
-		connOptions.m_added_nodes.push_back("212.125.247.47");
-		connOptions.m_added_nodes.push_back("80.211.194.89");
-		connOptions.m_added_nodes.push_back("89.76.251.96");
-		connOptions.m_added_nodes.push_back("119.9.108.125");
-		connOptions.m_added_nodes.push_back("24.161.3.153");
-		connOptions.m_added_nodes.push_back("45.32.165.26");
-		connOptions.m_added_nodes.push_back("80.117.22.23");
-		connOptions.m_added_nodes.push_back("105.228.160.192");
-		connOptions.m_added_nodes.push_back("105.233.54.109");
-		connOptions.m_added_nodes.push_back("109.163.246.81");
-		connOptions.m_added_nodes.push_back("176.59.131.56");
-		connOptions.m_added_nodes.push_back("176.59.135.220");
-		connOptions.m_added_nodes.push_back("91.214.79.144");
-		connOptions.m_added_nodes.push_back("114.252.170.145");
-		connOptions.m_added_nodes.push_back("125.215.137.66");
-		connOptions.m_added_nodes.push_back("139.162.210.78");
-		connOptions.m_added_nodes.push_back("140.186.194.162");
-		connOptions.m_added_nodes.push_back("144.76.64.49");
-		connOptions.m_added_nodes.push_back("148.251.2.141");
-		connOptions.m_added_nodes.push_back("151.80.96.105");
-		connOptions.m_added_nodes.push_back("40.83.220.117");
-		connOptions.m_added_nodes.push_back("45.63.115.238");
-		connOptions.m_added_nodes.push_back("45.77.62.129");
-		connOptions.m_added_nodes.push_back("5.8.126.127");
-		connOptions.m_added_nodes.push_back("78.46.37.209");
-		connOptions.m_added_nodes.push_back("88.98.87.243");
-		connOptions.m_added_nodes.push_back("89.146.70.111");
-		connOptions.m_added_nodes.push_back("92.110.174.51");
-		connOptions.m_added_nodes.push_back("94.130.139.90");
-		connOptions.m_added_nodes.push_back("94.130.220.2");
-		connOptions.m_added_nodes.push_back("99.70.88.220");
+
+    //TODO: DATACOIN. Ноды для синхронизации (не сид ноды)
+    connOptions.m_added_nodes.push_back("212.125.247.47");
+    connOptions.m_added_nodes.push_back("80.211.194.89");
+    connOptions.m_added_nodes.push_back("89.76.251.96");
+    connOptions.m_added_nodes.push_back("119.9.108.125");
+    connOptions.m_added_nodes.push_back("24.161.3.153");
+    connOptions.m_added_nodes.push_back("45.32.165.26");
+    connOptions.m_added_nodes.push_back("80.117.22.23");
+    connOptions.m_added_nodes.push_back("105.228.160.192");
+    connOptions.m_added_nodes.push_back("105.233.54.109");
+    connOptions.m_added_nodes.push_back("109.163.246.81");
+    connOptions.m_added_nodes.push_back("176.59.131.56");
+    connOptions.m_added_nodes.push_back("176.59.135.220");
+    connOptions.m_added_nodes.push_back("91.214.79.144");
+    connOptions.m_added_nodes.push_back("114.252.170.145");
+    connOptions.m_added_nodes.push_back("125.215.137.66");
+    connOptions.m_added_nodes.push_back("139.162.210.78");
+    connOptions.m_added_nodes.push_back("140.186.194.162");
+    connOptions.m_added_nodes.push_back("144.76.64.49");
+    connOptions.m_added_nodes.push_back("148.251.2.141");
+    connOptions.m_added_nodes.push_back("151.80.96.105");
+    connOptions.m_added_nodes.push_back("40.83.220.117");
+    connOptions.m_added_nodes.push_back("45.63.115.238");
+    connOptions.m_added_nodes.push_back("45.77.62.129");
+    connOptions.m_added_nodes.push_back("5.8.126.127");
+    connOptions.m_added_nodes.push_back("78.46.37.209");
+    connOptions.m_added_nodes.push_back("88.98.87.243");
+    connOptions.m_added_nodes.push_back("89.146.70.111");
+    connOptions.m_added_nodes.push_back("92.110.174.51");
+    connOptions.m_added_nodes.push_back("94.130.139.90");
+    connOptions.m_added_nodes.push_back("94.130.220.2");
+    connOptions.m_added_nodes.push_back("99.70.88.220");
 	
     connOptions.nMaxOutboundTimeframe = nMaxOutboundTimeframe;
     connOptions.nMaxOutboundLimit = nMaxOutboundLimit;
@@ -1758,7 +1758,7 @@ bool AppInitMain(boost::thread_group& threadGroup, CScheduler& scheduler)
 //		connOptions.vSeedNodes.push_back("148.251.2.141");
 //		connOptions.vSeedNodes.push_back("119.9.108.125");
 //    }
-    connOptions.vSeedNodes.push_back("192.168.2.9"); //TODO: DATACOIN
+    connOptions.vSeedNodes.push_back("192.168.2.9"); //DATACOIN NODES
 
 
     // Initiate outbound connections unless connect=0

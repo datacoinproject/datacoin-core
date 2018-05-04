@@ -162,6 +162,7 @@ public:
             {
                 {     0, consensus.hashGenesisBlock },
                 { 72200, uint256S("0x63160677a0dce11897607d62fd6eb3f35c3c42759322c477027c2f2a439df0bc")},
+                { 2000000, uint256S("0x4e49f85b69f68d6f58b2b18473c4bf17d88e6dd7c79d7d416e22522da17bc91a")},
             }
         };
 

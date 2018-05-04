@@ -518,7 +518,9 @@ bool ConnectSocketDirectly(const CService &addrConnect, SOCKET& hSocketRet, int 
             }
             if (nRet != 0)
             {
-                LogPrintf("connect() to %s failed after select(): %s\n", addrConnect.ToString(), NetworkErrorString(nRet));
+				//DATACOIN CHANGED cnleaning log
+                //LogPrintf("connect() to %s failed after select(): %s\n", addrConnect.ToString(), NetworkErrorString(nRet));
+				LogPrint(BCLog::NET, "connect() to %s failed after select(): %s\n", addrConnect.ToString(), NetworkErrorString(nRet));
                 CloseSocket(hSocket);
                 return false;
             }

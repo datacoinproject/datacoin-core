@@ -20,7 +20,7 @@ CAmount GetRequiredFee(unsigned int nTxBytes)
 
 
 CAmount GetMinimumFee(unsigned int nTxBytes, const CCoinControl& coin_control, const CTxMemPool& pool, const CBlockPolicyEstimator& estimator, FeeCalculation *feeCalc)
-{ //DATACOIN FEE allow free == false
+{   //DATACOIN FEE allow free == false
     /* User control of how to calculate fee uses the following parameter precedence:
        1. coin_control.m_feerate
        2. coin_control.m_confirm_target

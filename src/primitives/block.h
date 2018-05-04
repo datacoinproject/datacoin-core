@@ -72,19 +72,19 @@ public:
     }
 
     // Primecoin: header hash does not include prime certificate
-	// Данный хеш используется для проверки POW. Включать в хэш bnPrimeChainMultiplier нельзя
+    // Данный хеш используется для проверки POW. Включать в хэш bnPrimeChainMultiplier нельзя
     uint256 GetHeaderHash() const
     {
-		//DATACOIN CHANGED Переделываем хеширование
-		//return Hash(BEGIN(nVersion), END(nNonce));
-		
-		//CDataStream ss(SER_GETHASH, 0);
+        //DATACOIN CHANGED Переделываем хеширование
+        //return Hash(BEGIN(nVersion), END(nNonce));
+
+        //CDataStream ss(SER_GETHASH, 0);
         //ss << nVersion << hashPrevBlock << hashMerkleRoot << nTime << nBits << nNonce;
         //return Hash(ss.begin(), ss.end());
-		
-		CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
-		ss << nVersion << hashPrevBlock << hashMerkleRoot << nTime << nBits << nNonce;
-		return ss.GetHash();
+
+        CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
+        ss << nVersion << hashPrevBlock << hashMerkleRoot << nTime << nBits << nNonce;
+        return ss.GetHash();
     }
 
 	uint256 GetHash() const;
@@ -144,11 +144,10 @@ public:
         block.nTime          = nTime;
         block.nBits          = nBits;
         block.nNonce         = nNonce;
-		block.bnPrimeChainMultiplier
-							= bnPrimeChainMultiplier;
-		//DATACOIN OLDCLIENT !!! XPM не заполяет это поле. Исправить?
-		//также CBlockIndex::GetBlockHeader()
-		//block.bnPrimeChainMultiplier = bnPrimeChainMultiplier; 
+        block.bnPrimeChainMultiplier = bnPrimeChainMultiplier;
+        //DATACOIN OLDCLIENT !!! XPM не заполяет это поле. Исправить?
+        //также CBlockIndex::GetBlockHeader()
+        //block.bnPrimeChainMultiplier = bnPrimeChainMultiplier; 
         return block;
     }
 

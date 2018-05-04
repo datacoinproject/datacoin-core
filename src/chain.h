@@ -324,21 +324,21 @@ public:
         block.nTime          = nTime;
         block.nBits          = nBits;
         block.nNonce         = nNonce;
-	block.bnPrimeChainMultiplier = bnPrimeChainMultiplier;
-	//DATACOIN CHANGED !!! XPM CBlockIndex не содержит bnPrimeChainMultiplier.
-	//block.bnPrimeChainMultiplier = bnPrimeChainMultiplier; 
-	//Вследствие по сети в HEADERS отправляется тоже пустое поле и приемник 
-	//net_processing.cpp NetMsgType::GETHEADERS 
-	//не может на месте проверить консистентность хэшей.
-	//Желательно исправить.
-	//так же смотри CBlock::GetBlockHeader()
+        block.bnPrimeChainMultiplier = bnPrimeChainMultiplier;
+        //DATACOIN CHANGED !!! XPM CBlockIndex не содержит bnPrimeChainMultiplier.
+        //block.bnPrimeChainMultiplier = bnPrimeChainMultiplier; 
+        //Вследствие по сети в HEADERS отправляется тоже пустое поле и приемник 
+        //net_processing.cpp NetMsgType::GETHEADERS 
+        //не может на месте проверить консистентность хэшей.
+        //Желательно исправить.
+        //так же смотри CBlock::GetBlockHeader()
 		
         return block;
     }
 
 	uint256 GetHeaderHash() const //DATACOIN ADDED
     {
-	//TODO: DATACOIN. Переделываем хеширование
+        //DATACOIN CHANGED Переделываем хеширование
 	
 		//CDataStream ss(SER_GETHASH, 0);
         //ss << nVersion << hashPrevBlock << hashMerkleRoot << nTime << nBits << nNonce;
@@ -366,7 +366,7 @@ public:
         return (int64_t)nTimeMax;
     }
 	
-    //TODO: DATACOIN. Not used primecoin function
+    //DATACOIN CHANGED Not used primecoin function
     //CBigNum GetBlockWork() const;
 
     enum { nMedianTimeSpan=99 };

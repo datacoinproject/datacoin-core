@@ -1507,17 +1507,17 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         if (vAddr.size() < 1000)
             pfrom->fGetAddr = false;
 
-            //DATACOIN DELETE?
-            //Не отсоединяемся и начинаем агрессивную синхронизацию с сида.
-            //вернул как было
-            //static bool agrSync=true;
-            //if (agrSync){
-            //    g_connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::GETHEADERS, chainActive.GetLocator(chainActive.Tip()), uint256()));
-            //    agrSync= false;
-            //}else{
-            if (pfrom->fOneShot)
+        //DATACOIN DELETE?
+        //Не отсоединяемся и начинаем агрессивную синхронизацию с сида.
+        //вернул как было
+        //static bool agrSync=true;
+        //if (agrSync){
+        //    g_connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::GETHEADERS, chainActive.GetLocator(chainActive.Tip()), uint256()));
+        //    agrSync= false;
+        //}else{
+        if (pfrom->fOneShot)
             pfrom->fDisconnect = true;
-          //}
+        //}
     }
 
     else if (strCommand == NetMsgType::SENDHEADERS)
@@ -1618,9 +1618,9 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         }
 		if (pLastBlockInv && !IsInitialBlockDownload()) //DATACOIN ADDED
 		{
-                    connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::GETHEADERS, chainActive.GetLocator(pindexBestHeader), uint256())); //DATACOIN OPTIMIZE?
-                    LogPrint(BCLog::NET, "getheaders (%d) %s to peer=%d\n", pindexBestHeader->nHeight, uint256().ToString(), pfrom->GetId());
-					pfrom->AskFor(*pLastBlockInv);
+            connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::GETHEADERS, chainActive.GetLocator(pindexBestHeader), uint256())); //DATACOIN OPTIMIZE?
+            LogPrint(BCLog::NET, "getheaders (%d) %s to peer=%d\n", pindexBestHeader->nHeight, uint256().ToString(), pfrom->GetId());
+            pfrom->AskFor(*pLastBlockInv);
 		}
 		
     }
@@ -2413,7 +2413,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         nodestate->nUnconnectingHeaders = 0;
 
 		if (nCount==1 && !pindexLast) return true; //DATACOIN OLDCLIENT
-			
+
         assert(pindexLast);
         UpdateBlockAvailability(pfrom->GetId(), pindexLast->GetBlockHash());
 
@@ -2429,7 +2429,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         // If this set of headers is valid and ends in a block with at least as
         // much work as our tip, download as much as possible.
 		LogPrint(BCLog::NET, "fCanDirectFetch=%d pindexLast->IsValid(BLOCK_VALID_TREE)=%d chainActive.Tip()->nChainWork=%s pindexLast->nChainWork=%s\n", 
-					(int)fCanDirectFetch, (int)pindexLast->IsValid(BLOCK_VALID_TREE), chainActive.Tip()->nChainWork.ToString(), pindexLast->nChainWork.ToString()); //DATACOIN ADDED
+                    (int)fCanDirectFetch, (int)pindexLast->IsValid(BLOCK_VALID_TREE), chainActive.Tip()->nChainWork.ToString(), pindexLast->nChainWork.ToString()); //DATACOIN ADDED
         if (fCanDirectFetch && pindexLast->IsValid(BLOCK_VALID_TREE) && chainActive.Tip()->nChainWork <= pindexLast->nChainWork) {
             std::vector<const CBlockIndex*> vToFetch;
             const CBlockIndex *pindexWalk = pindexLast;

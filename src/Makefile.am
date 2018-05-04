@@ -108,6 +108,9 @@ BITCOIN_CORE_H = \
   keystore.h \
   dbwrapper.h \
   limitedmap.h \
+  madpool/primeserver.h \
+  madpool/protocol.pb.h \
+  madpool/pool.h \
   memusage.h \
   merkleblock.h \
   miner.h \
@@ -197,6 +200,9 @@ libdatacoin_server_a_SOURCES = \
   httpserver.cpp \
   init.cpp \
   dbwrapper.cpp \
+  madpool/primeserver.cpp \
+  madpool/protocol.pb.cpp \
+  madpool/pool.cpp \
   merkleblock.cpp \
   miner.cpp \
   net.cpp \

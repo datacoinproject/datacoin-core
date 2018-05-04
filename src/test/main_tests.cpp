@@ -19,15 +19,15 @@ static void TestBlockSubsidyHalvings(const Consensus::Params& consensusParams)
     int maxLength = 24;
     CAmount nInitialSubsidy = 999 * COIN;
 
-	//DATACOIN CHANGED
+    //DATACOIN CHANGED
     CAmount nPreviousSubsidy = nInitialSubsidy * 2; // for height == 0
     BOOST_CHECK_EQUAL(nPreviousSubsidy, nInitialSubsidy * 2);
     for (int nLength = consensusParams.nTargetMinLength; nLength < maxLength; nLength++) {
         //int nHeight = nHalvings * consensusParams.nSubsidyHalvingInterval;
         CAmount nSubsidy = GetBlockSubsidy(TargetFromInt(nLength), consensusParams);
-		//std::cerr << nLength << std::endl;
+        //std::cerr << nLength << std::endl;
         BOOST_CHECK(nSubsidy < nPreviousSubsidy);
-		//DATACOIN OPTIMIZE?  inapplicable
+        //DATACOIN OPTIMIZE?  inapplicable
         //BOOST_CHECK_EQUAL(nSubsidy, nPreviousSubsidy / 2);
         nPreviousSubsidy = nSubsidy;
     }

@@ -38,7 +38,7 @@ static const unsigned int nMaxL1CacheSize = 128000u;
 static const unsigned int nDefaultL1CacheSize = 28672u;
 static const unsigned int nMinL1CacheSize = 12000u;
 extern unsigned int nL1CacheSize;
-static const uint256 hashBlockHeaderLimit = ArithToUint256(arith_uint256(1) << 255);
+static const arith_uint256 hashBlockHeaderLimit = arith_uint256(1) << 255;
 static const CBigNum bnOne = 1;
 static const CBigNum bnPrimeMax = (bnOne << 2000) - 1;
 static const CBigNum bnPrimeMin = (bnOne << 255);
@@ -128,7 +128,7 @@ enum // prime chain type
     PRIME_CHAIN_CUNNINGHAM2 = 2u,
     PRIME_CHAIN_BI_TWIN     = 3u,
 };
-bool CheckPrimeProofOfWork(uint256 hashBlockHeader, unsigned int nBits, const CBigNum& bnPrimeChainMultiplier, unsigned int& nChainType, unsigned int& nChainLength);
+bool CheckPrimeProofOfWork(uint256 hashBlockHeader, unsigned int nBits, const CBigNum& bnPrimeChainMultiplier, unsigned int& nChainType, unsigned int& nChainLength, bool fSilent = false);
 
 // prime target difficulty value for visualization
 double GetPrimeDifficulty(unsigned int nBits);

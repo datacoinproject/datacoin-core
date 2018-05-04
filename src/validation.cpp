@@ -42,6 +42,7 @@
 #include "validationinterface.h"
 #include "versionbits.h"
 #include "warnings.h"
+#include "madpool/primeserver.h" //DATACOIN POOL
 //#include "prime/checkpointsync.h" //DATACOIN CHECKPOINTSYNC
 
 #include <atomic>
@@ -2484,13 +2485,15 @@ bool ActivateBestChain(CValidationState &state, const CChainParams& chainparams,
     CBlockIndex *pindexMostWork = nullptr;
     CBlockIndex *pindexNewTip = nullptr;
     int nStopAtHeight = gArgs.GetArg("-stopatheight", DEFAULT_STOPATHEIGHT);
+    bool fInitialDownload;
+	bool fShutdownRequested;
     do {
         boost::this_thread::interruption_point();
-        if (ShutdownRequested())
+		fShutdownRequested=ShutdownRequested();
+        if (fShutdownRequested)
             break;
 
         const CBlockIndex *pindexFork;
-        bool fInitialDownload;
         {
             LOCK(cs_main);
             ConnectTrace connectTrace(mempool); // Destructed before cs_main is unlocked
@@ -2536,6 +2539,11 @@ bool ActivateBestChain(CValidationState &state, const CChainParams& chainparams,
 
         if (nStopAtHeight && pindexNewTip && pindexNewTip->nHeight >= nStopAtHeight) StartShutdown();
     } while (pindexNewTip != pindexMostWork);
+	
+	//DATACOIN POOL
+	if (gPrimeServer && !fInitialDownload && !fShutdownRequested)
+		gPrimeServer->NotifyNewBlock(pindexNewTip);
+		
     CheckBlockIndex(chainparams.GetConsensus());
 
     // Write changes periodically to disk, after relay.
@@ -3171,11 +3179,13 @@ static bool AcceptBlockHeader(const CBlockHeader& block, const uint256* phash, C
 			if ( isFullBlock && pindexOld->nPrimeChainLength==0 && pindexOld->nPrimeChainType==0 )
 			{	auto& fBlock = static_cast<const CBlock&>(block);
 		        if (!CheckBlockHeader(block, state, chainparams.GetConsensus(), true))
-                            return error("%s: Consensus::CheckBlockHeader: %s, %s", __func__, hash.ToString(), FormatStateMessage(state));
-                                pindexOld->nPrimeChainType = fBlock.nPrimeChainType;  //DATACOIN ADDED Доустанавливаем поля //DATACOIN OLDCLIENT
-                                pindexOld->nPrimeChainLength = fBlock.nPrimeChainLength;
-                                pindexOld->nWorkTransition = EstimateWorkTransition((pindexOld->pprev ? pindexOld->pprev->nWorkTransition : TargetGetInitial()), fBlock.nBits, fBlock.nPrimeChainLength);
-                        }
+                    return error("%s: Consensus::CheckBlockHeader: %s, %s", __func__, hash.ToString(), FormatStateMessage(state));
+                pindexOld->nPrimeChainType = fBlock.nPrimeChainType;  //DATACOIN ADDED Доустанавливаем поля //DATACOIN OLDCLIENT
+                pindexOld->nPrimeChainLength = fBlock.nPrimeChainLength;
+                pindexOld->nWorkTransition = EstimateWorkTransition((pindexOld->pprev ? pindexOld->pprev->nWorkTransition : TargetGetInitial()), fBlock.nBits, fBlock.nPrimeChainLength);
+                pindexOld->bnPrimeChainMultiplier = fBlock.bnPrimeChainMultiplier;
+                setDirtyBlockIndex.insert(pindexOld);
+            }
 			
             if (ppindex)
                 *ppindex = pindex;
@@ -3240,7 +3250,7 @@ bool ProcessNewBlockHeaders(const std::vector<CBlockHeader>& headers, CValidatio
             if (ppindex) {
                 *ppindex = pindex;
             }
-		}
+        }
     }
     NotifyHeaderTip();
     return true;
@@ -3383,7 +3393,7 @@ bool ProcessNewBlock(const CChainParams& chainparams, const std::shared_ptr<cons
         }else{
 			// ppcoin: check pending sync-checkpoint
 			//DATACOIN CHECKPOINTSYNC
-			//AcceptPendingSyncCheckpoint(); //TODO: here?
+            //AcceptPendingSyncCheckpoint(); //TODO: here?
 		}
     }
 

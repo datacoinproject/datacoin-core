@@ -27,6 +27,7 @@
 #include "utilmoneystr.h"
 #include "validationinterface.h"
 #include "prime/prime.h"
+#include "madpool/primeserver.h" //DATACOIN POOL
 
 #include <algorithm>
 #include <queue>
@@ -483,13 +484,13 @@ void IncrementExtraNonce(CBlock* pblock, const CBlockIndex* pindexPrev, unsigned
     pblock->hashMerkleRoot = BlockMerkleRoot(*pblock);
 }
 
-bool CheckWork(CBlock* pblock, CWallet& wallet, std::shared_ptr<CReserveScript> reserve_script) //CReserveKey& reservekey)
+bool CheckWork(CBlock* pblock, CWallet& wallet, std::shared_ptr<CReserveScript> reserve_script, bool fSilent) //CReserveKey& reservekey)
 {
     //DATACOIN WASTED Primecoin wasting instruction?
     //C_BigNum bnTarget = CBigNum().SetCompact(pblock->nBits); 
 	
-    if (!CheckProofOfWork(pblock->GetHeaderHash(), pblock->nBits, Params().GetConsensus(), pblock->bnPrimeChainMultiplier, pblock->nPrimeChainType, pblock->nPrimeChainLength))
-        return error("DatacoinMiner : failed proof-of-work check");
+    if (!CheckProofOfWork(pblock->GetHeaderHash(), pblock->nBits, Params().GetConsensus(), pblock->bnPrimeChainMultiplier, pblock->nPrimeChainType, pblock->nPrimeChainLength, fSilent))
+        return fSilent ? false : error("DatacoinMiner : failed proof-of-work check");
 
     //// debug print
     LogPrintf("DatacoinMiner:\n");
@@ -590,7 +591,7 @@ bool MiniMiner(CBlock *pblock, CBlockIndex* pindexPrev, bool allowIncrementExtra
 
             // Check that the hash meets the minimum
             uint256 phash = pblock->GetHeaderHash();
-            if (phash < hashBlockHeaderLimit)
+            if (UintToArith256(phash) < hashBlockHeaderLimit) //DATACOIN OPTIMIZE?
                 continue;
 
             mpz_set_uint256(mpzHash.get_mpz_t(), phash);
@@ -803,7 +804,7 @@ bool MiniMiner(CBlock *pblock, CBlockIndex* pindexPrev, bool allowIncrementExtra
 
                     // Check that the hash meets the minimum
                     uint256 phash = pblock->GetHeaderHash();
-                    if (phash < hashBlockHeaderLimit)
+                    if (UintToArith256(phash) < hashBlockHeaderLimit) //DATACOIN OPTIMIZE?
                         continue;
 
                     mpz_set_uint256(mpzHash.get_mpz_t(), phash);
@@ -843,7 +844,7 @@ bool MiniMiner(CBlock *pblock, CBlockIndex* pindexPrev, bool allowIncrementExtra
 	return false;
 }
 
-void static BitcoinMiner(CWallet *pwallet)
+void static BitcoinCPUMiner(CWallet *pwallet)
 {
     static CCriticalSection cs;
     static bool fTimerStarted = false;
@@ -940,7 +941,7 @@ void static BitcoinMiner(CWallet *pwallet)
     nExtraNonce = ns_now.count() % nExtraNonceModulo;
 
     // Print the chosen extra nonce for debugging
-    LogPrintf("BitcoinMiner() : Setting initial extra nonce to %u\n", nExtraNonce);
+    LogPrintf("BitcoinCPUMiner() : Setting initial extra nonce to %u\n", nExtraNonce);
 
     try { while(true) {
         while (g_connman->GetNodeCount(CConnman::CONNECTIONS_ALL)==0)  MilliSleep(1000);
@@ -985,7 +986,7 @@ void static BitcoinMiner(CWallet *pwallet)
 
             // Check that the hash meets the minimum
             uint256 phash = pblock->GetHeaderHash();
-            if (phash < hashBlockHeaderLimit)
+            if (UintToArith256(phash) < hashBlockHeaderLimit) //DATACOIN OPTIMIZE?
                 continue;
 
             mpz_set_uint256(mpzHash.get_mpz_t(), phash);
@@ -1209,7 +1210,7 @@ void static BitcoinMiner(CWallet *pwallet)
 
                     // Check that the hash meets the minimum
                     uint256 phash = pblock->GetHeaderHash();
-                    if (phash < hashBlockHeaderLimit)
+                    if (UintToArith256(phash) < hashBlockHeaderLimit) //DATACOIN OPTIMIZE?
                         continue;
 
                     mpz_set_uint256(mpzHash.get_mpz_t(), phash);
@@ -1264,23 +1265,53 @@ void static BitcoinMiner(CWallet *pwallet)
 
 void GenerateBitcoins(bool fGenerate, CWallet* pwallet)
 {
-    static boost::thread_group* minerThreads = NULL;
-
-    int nThreads = gArgs.GetArg("-genproclimit", -1);
-    if (nThreads < 0)
-        nThreads = boost::thread::hardware_concurrency();
-
-    if (minerThreads != NULL)
-    {
-        minerThreads->interrupt_all();
-        delete minerThreads;
-        minerThreads = NULL;
+//    static boost::thread_group* minerThreads = NULL;
+//    
+//    int nThreads = gArgs.GetArg("-genproclimit", -1);
+//    if (nThreads < 0)
+//        nThreads = boost::thread::hardware_concurrency();
+//    
+//    if (minerThreads != NULL)
+//    {
+//		LogPrintf("DatacoinMiner threads: START TERMINATING\n");
+//        minerThreads->interrupt_all();
+//		//Лучше пусть грохнутся майнерные потоки, чем зависнуть здесь и не завершить грамотно остальное
+//		//minerThreads->join_all();
+//		//LogPrintf("DatacoinMiner threads: COMPLETED TERMINATING\n");
+//		//интересно можно ли тут сразу вызывать деструктор
+//        delete minerThreads;
+//        minerThreads = NULL;
+//    }
+//    
+//    if (nThreads == 0 || !fGenerate)
+//        return;
+//    
+//    minerThreads = new boost::thread_group();
+//    for (int i = 0; i < nThreads; i++)
+//        minerThreads->create_thread(boost::bind(&BitcoinCPUMiner, pwallet));
+	//DATACOIN POOL
+    LogPrintf("[PrimeServer] GenerateBitcoins: %s\n", fGenerate ? "true" : "false");
+	
+    if(gPrimeServer && !fGenerate){
+    	
+    	delete gPrimeServer;
+    	gPrimeServer = nullptr;
+    	
     }
-
-    if (nThreads == 0 || !fGenerate)
-        return;
-
-    minerThreads = new boost::thread_group();
-    for (int i = 0; i < nThreads; i++)
-        minerThreads->create_thread(boost::bind(&BitcoinMiner, pwallet));
+    
+    if(fGenerate && !gPrimeServer){
+    	
+    	gPrimeServer = PrimeServer::CreateServer(pwallet);
+    	gPrimeServer->NotifyNewBlock(chainActive.Tip());
+    	
+//#ifndef WIN32
+//    	struct sigaction sa;
+//		sa.sa_handler = HandleSIGTERM;
+//		sigemptyset(&sa.sa_mask);
+//		sa.sa_flags = 0;
+//		sigaction(SIGTERM, &sa, NULL);
+//		sigaction(SIGINT, &sa, NULL);
+//#endif
+  	
+     }
 }

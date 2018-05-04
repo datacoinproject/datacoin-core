@@ -214,6 +214,7 @@ private:
 void IncrementExtraNonce(CBlock* pblock, const CBlockIndex* pindexPrev, unsigned int& nExtraNonce, bool fNoReset = false);
 int64_t UpdateTime(CBlockHeader* pblock, const Consensus::Params& consensusParams, const CBlockIndex* pindexPrev);
 
+bool CheckWork(CBlock* pblock, CWallet& wallet, std::shared_ptr<CReserveScript> reserve_script, bool fSilent=false);
 bool MiniMiner(CBlock *pblock, CBlockIndex* pindexPrev, bool allowIncrementExtraNonce = false); //DATACOIN ADD
 
 #endif // BITCOIN_MINER_H

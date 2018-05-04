@@ -64,25 +64,25 @@ BOOST_AUTO_TEST_CASE(key_test1)
     CPubKey pubkey2  = key2. GetPubKey();
     CPubKey pubkey1C = key1C.GetPubKey();
     CPubKey pubkey2C = key2C.GetPubKey();
-	
-	//Так можно получить compressed и не compressed пары secret
-	//CKey tmp; CBitcoinSecret tmpSec;
-	//tmp.Set(key1.begin(), key1.end(), false); tmpSec.SetKey(tmp);
-	//std::cerr << "\n" << tmpSec.ToString() << "\n";
-	//tmp.Set(key2.begin(), key2.end(), false); tmpSec.SetKey(tmp);
-	//std::cerr << "\n" << tmpSec.ToString() << "\n";
-	//tmp.Set(key1C.begin(), key1C.end(), false); tmpSec.SetKey(tmp);
-	//std::cerr << "\n" << tmpSec.ToString() << "\n";
-	//tmp.Set(key2C.begin(), key2C.end(), false); tmpSec.SetKey(tmp);
-	//std::cerr << "\n" << tmpSec.ToString() << "\n";
-	//tmp.Set(key1.begin(), key1.end(), true); tmpSec.SetKey(tmp);
-	//std::cerr << "\n" << tmpSec.ToString() << "\n";
-	//tmp.Set(key2.begin(), key2.end(), true); tmpSec.SetKey(tmp);
-	//std::cerr << "\n" << tmpSec.ToString() << "\n";
-	//tmp.Set(key1C.begin(), key1C.end(), true); tmpSec.SetKey(tmp);
-	//std::cerr << "\n" << tmpSec.ToString() << "\n";
-	//tmp.Set(key2C.begin(), key2C.end(), true); tmpSec.SetKey(tmp);
-	//std::cerr << "\n" << tmpSec.ToString() << "\n";	
+
+    //Так можно получить compressed и не compressed пары secret
+    //CKey tmp; CBitcoinSecret tmpSec;
+    //tmp.Set(key1.begin(), key1.end(), false); tmpSec.SetKey(tmp);
+    //std::cerr << "\n" << tmpSec.ToString() << "\n";
+    //tmp.Set(key2.begin(), key2.end(), false); tmpSec.SetKey(tmp);
+    //std::cerr << "\n" << tmpSec.ToString() << "\n";
+    //tmp.Set(key1C.begin(), key1C.end(), false); tmpSec.SetKey(tmp);
+    //std::cerr << "\n" << tmpSec.ToString() << "\n";
+    //tmp.Set(key2C.begin(), key2C.end(), false); tmpSec.SetKey(tmp);
+    //std::cerr << "\n" << tmpSec.ToString() << "\n";
+    //tmp.Set(key1.begin(), key1.end(), true); tmpSec.SetKey(tmp);
+    //std::cerr << "\n" << tmpSec.ToString() << "\n";
+    //tmp.Set(key2.begin(), key2.end(), true); tmpSec.SetKey(tmp);
+    //std::cerr << "\n" << tmpSec.ToString() << "\n";
+    //tmp.Set(key1C.begin(), key1C.end(), true); tmpSec.SetKey(tmp);
+    //std::cerr << "\n" << tmpSec.ToString() << "\n";
+    //tmp.Set(key2C.begin(), key2C.end(), true); tmpSec.SetKey(tmp);
+    //std::cerr << "\n" << tmpSec.ToString() << "\n";	
 
     BOOST_CHECK(key1.VerifyPubKey(pubkey1));
     BOOST_CHECK(!key1.VerifyPubKey(pubkey1C));
@@ -173,24 +173,24 @@ BOOST_AUTO_TEST_CASE(key_test1)
     BOOST_CHECK(key1.Sign(hashMsg, detsig));
     BOOST_CHECK(key1C.Sign(hashMsg, detsigc));
     BOOST_CHECK(detsig == detsigc);
-	//std::cerr << "\n" << HexStr(detsig) << "\n"; 
+    //std::cerr << "\n" << HexStr(detsig) << "\n"; 
     BOOST_CHECK(detsig == ParseHex("3045022100e5b1ad2350d415cfc3d13025e5769e03f27117e62ab49eff991a8da141a25b7c02202e51cad7a2ea23a12618f4cba961aa10af432da6b62508a284819fe11ffe8b72"));
     BOOST_CHECK(key2.Sign(hashMsg, detsig));
     BOOST_CHECK(key2C.Sign(hashMsg, detsigc));
     BOOST_CHECK(detsig == detsigc);
-	//std::cerr << "\n" << HexStr(detsig) << "\n"; 
+    //std::cerr << "\n" << HexStr(detsig) << "\n"; 
     BOOST_CHECK(detsig == ParseHex("3044022079c109267004181a75a16c24d75ee181f1a8045eacb3dc7ab1085c98fbdb57f80220360247cc6af54f18b6ed5c68709028628c93035cc31818132fdcfb3da2a7029b"));
     BOOST_CHECK(key1.SignCompact(hashMsg, detsig));
     BOOST_CHECK(key1C.SignCompact(hashMsg, detsigc));
-	//std::cerr << "\n" << HexStr(detsig) << "\n"; 
+    //std::cerr << "\n" << HexStr(detsig) << "\n"; 
     BOOST_CHECK(detsig == ParseHex("1ce5b1ad2350d415cfc3d13025e5769e03f27117e62ab49eff991a8da141a25b7c2e51cad7a2ea23a12618f4cba961aa10af432da6b62508a284819fe11ffe8b72"));
-	//std::cerr << "\n" << HexStr(detsigc) << "\n"; 
+    //std::cerr << "\n" << HexStr(detsigc) << "\n"; 
     BOOST_CHECK(detsigc == ParseHex("20e5b1ad2350d415cfc3d13025e5769e03f27117e62ab49eff991a8da141a25b7c2e51cad7a2ea23a12618f4cba961aa10af432da6b62508a284819fe11ffe8b72"));
     BOOST_CHECK(key2.SignCompact(hashMsg, detsig));
     BOOST_CHECK(key2C.SignCompact(hashMsg, detsigc));
-	//std::cerr << "\n" << HexStr(detsig) << "\n"; 
+    //std::cerr << "\n" << HexStr(detsig) << "\n"; 
     BOOST_CHECK(detsig == ParseHex("1c79c109267004181a75a16c24d75ee181f1a8045eacb3dc7ab1085c98fbdb57f8360247cc6af54f18b6ed5c68709028628c93035cc31818132fdcfb3da2a7029b"));
-	//std::cerr << "\n" << HexStr(detsigc) << "\n"; 
+    //std::cerr << "\n" << HexStr(detsigc) << "\n"; 
     BOOST_CHECK(detsigc == ParseHex("2079c109267004181a75a16c24d75ee181f1a8045eacb3dc7ab1085c98fbdb57f8360247cc6af54f18b6ed5c68709028628c93035cc31818132fdcfb3da2a7029b"));
 }
 

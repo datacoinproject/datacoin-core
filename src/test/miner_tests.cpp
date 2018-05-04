@@ -28,10 +28,10 @@
 //DATACOIN ADDED for low difficulty mining
 struct RegtestingSetup : public TestingSetup {
     RegtestingSetup() : TestingSetup(CBaseChainParams::REGTEST) {
-			//DATACOIN ADDED
-		    // Primecoin: Generate prime table when starting up
-			GeneratePrimeTable();
-			InitPrimeMiner();
+        //DATACOIN ADDED
+        // Primecoin: Generate prime table when starting up
+        GeneratePrimeTable();
+        InitPrimeMiner();
 	}
 };
 

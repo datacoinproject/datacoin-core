@@ -14,6 +14,9 @@
 
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params)
 {
+	//DATACOIN OPTIMIZE? В тестах при нереалистичных входных (pindexPrev->nBits==0) и nActualSpacing==0 
+	//функция возвращает значение ниже TargetGetLimit().
+	//Изменить чтобы возвращала всегда не менее TargetGetLimit() ???
     unsigned int nBits = TargetGetLimit();
 
     // Genesis block
@@ -64,10 +67,10 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
     return bnNew.GetCompact();
 }
 
-bool CheckProofOfWork(uint256 hashBlockHeader, unsigned int nBits, const Consensus::Params& params, const CBigNum& bnProbablePrime, unsigned int& nChainType, unsigned int& nChainLength)
+bool CheckProofOfWork(uint256 hashBlockHeader, unsigned int nBits, const Consensus::Params& params, const CBigNum& bnProbablePrime, unsigned int& nChainType, unsigned int& nChainLength, bool fSilent)
 {
-    if (!CheckPrimeProofOfWork(hashBlockHeader, nBits, bnProbablePrime, nChainType, nChainLength))
-        return error("CheckProofOfWork() : check failed for prime proof-of-work");
+    if (!CheckPrimeProofOfWork(hashBlockHeader, nBits, bnProbablePrime, nChainType, nChainLength, fSilent))
+        return fSilent ? false : error("CheckProofOfWork() : check failed for prime proof-of-work");
 
     return true;
 }
