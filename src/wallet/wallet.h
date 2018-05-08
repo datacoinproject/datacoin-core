@@ -53,9 +53,9 @@ static const CAmount DEFAULT_TRANSACTION_MINFEE = MIN_TX_FEE;
 //! minimum recommended increment for BIP 125 replacement txs
 static const CAmount WALLET_INCREMENTAL_RELAY_FEE = MIN_TX_FEE; //DATACOIN CHANGED
 //! target minimum change amount
-static const CAmount MIN_CHANGE = CENT;
+static const CAmount MIN_CHANGE = MIN_TXOUT_AMOUNT; //DATACOIN CHANGED was CENT;
 //! final minimum change amount after paying for fees
-static const CAmount MIN_FINAL_CHANGE = MIN_CHANGE/2;
+static const CAmount MIN_FINAL_CHANGE = MIN_TXOUT_AMOUNT; //DATACOIN CHANGED was MIN_CHANGE/2;
 //! Default for -spendzeroconfchange
 static const bool DEFAULT_SPEND_ZEROCONF_CHANGE = true;
 //! Default for -walletrejectlongchains

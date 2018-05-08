@@ -12,10 +12,14 @@
 
 #include <zmq.h>
 
+#ifndef WIN32
 #define SOCKET LIBCZMQ_SOCKET
+#endif
 #include <czmq.h>
+#ifndef WIN32
 #undef SOCKET
 #undef INVALID_SOCKET
+#endif
 
 #include "madpool/primeserver.h"
 #include "wallet/wallet.h"

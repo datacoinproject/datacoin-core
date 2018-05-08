@@ -119,6 +119,7 @@ TestChain100Setup::TestChain100Setup() : TestingSetup(CBaseChainParams::REGTEST)
     for (int i = 0; i < COINBASE_MATURITY; i++)
     {
         std::vector<CMutableTransaction> noTxns;
+        //std::cerr << "TRY i " << i << "\n";
         CBlock b = CreateAndProcessBlock(noTxns, scriptPubKey);
         coinbaseTxns.push_back(*b.vtx[0]);
     }
@@ -151,8 +152,10 @@ TestChain100Setup::CreateAndProcessBlock(const std::vector<CMutableTransaction>&
 
     std::shared_ptr<const CBlock> shared_pblock = std::make_shared<const CBlock>(block);
     if (!ProcessNewBlock(chainparams, shared_pblock, true, nullptr)) 
-        {std::cerr << "ERROR in ProcessNewBlock\n";}
-        //else {std::cerr << "---ACCEPTED---\n";}
+    {
+        //std::cerr << "ERROR in ProcessNewBlock\n";
+    }
+    //else {std::cerr << "---ACCEPTED---\n";}
 
     CBlock result = block;
     return result;

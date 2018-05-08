@@ -157,7 +157,7 @@ public:
         fRequireStandard = true;
         fMineBlocksOnDemand = false;
 
-        //TODO: DATACOIN. Добавить чекпоинты
+		//DATACOIN CHANGED Добавить чекпоинты
         checkpointData = (CCheckpointData) {
             {
                 {     0, consensus.hashGenesisBlock },

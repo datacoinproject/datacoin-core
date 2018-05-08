@@ -18,17 +18,17 @@ static const unsigned int MAX_BLOCK_WEIGHT = 4 * (1024 * 1024); //TODO: (1024 * 
 static const unsigned int MAX_BLOCK_SIZE = (1024 * 1024);
 /** Obsolete: maximum size for mined blocks */
 static const unsigned int MAX_BLOCK_SIZE_GEN = MAX_BLOCK_SIZE/2;
+/** The maximum data payload size per transaction **/
+static const unsigned int MAX_TX_DATA_SIZE = (128 * 1024);
 /** The maximum size for transactions we're willing to relay/mine */
-static const unsigned int MAX_STANDARD_TX_SIZE = MAX_BLOCK_SIZE_GEN/5;
+static const unsigned int MAX_STANDARD_TX_SIZE = MAX_TX_DATA_SIZE + MAX_BLOCK_SIZE_GEN/5; //DATACOIN CHANGED
 /** The maximum allowed number of signature check operations in a block (network rule) */
 static const int64_t MAX_BLOCK_SIGOPS_COST = 80000; //TODO: MAX_BLOCK_SIZE/50 ??
 static const int64_t MIN_TX_FEE = (5 * CENT);
 static const int64_t MIN_RELAY_TX_FEE = MIN_TX_FEE;
 static const int64_t MIN_TXOUT_AMOUNT = MIN_TX_FEE;
-/** The maximum data payload size per transaction **/
-static const unsigned int MAX_TX_DATA_SIZE = (128 * 1024);
 /** Coinbase transaction outputs can only be spent after this number of new blocks (network rule) */
-static const int COINBASE_MATURITY = 3200;
+static const int COINBASE_MATURITY = 3000; //DATACOIN CHANGED
 
 static const int WITNESS_SCALE_FACTOR = 4;
 
