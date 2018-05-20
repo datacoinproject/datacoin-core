@@ -30,6 +30,7 @@ class WalletFrame;
 class WalletModel;
 class HelpMessageDialog;
 class ModalOverlay;
+class BlockExplorer;
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -111,12 +112,14 @@ private:
     QAction *openRPCConsoleAction;
     QAction *openAction;
     QAction *showHelpMessageAction;
+    QAction *openBlockExplorerAction;
 
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
     Notificator *notificator;
     RPCConsole *rpcConsole;
     HelpMessageDialog *helpMessageDialog;
+    BlockExplorer  *explorerWindow;
     ModalOverlay *modalOverlay;
 
     /** Keep track of previous number of blocks, to detect progress */
@@ -204,6 +207,9 @@ private Q_SLOTS:
     void gotoSignMessageTab(QString addr = "");
     /** Show Sign/Verify Message dialog and switch to verify message tab */
     void gotoVerifyMessageTab(QString addr = "");
+
+    /** Switch to Explorer Page */
+    void gotoBlockExplorerPage(); 
 
     /** Show open dialog */
     void openClicked();

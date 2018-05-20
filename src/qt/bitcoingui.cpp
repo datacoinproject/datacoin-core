@@ -25,6 +25,7 @@
 #ifdef ENABLE_WALLET
 #include "walletframe.h"
 #include "walletmodel.h"
+#include "blockexplorer.h"
 #endif // ENABLE_WALLET
 
 #ifdef Q_OS_MAC
@@ -118,6 +119,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     notificator(0),
     rpcConsole(0),
     helpMessageDialog(0),
+    explorerWindow(0),
     modalOverlay(0),
     prevBlocks(0),
     spinnerFrame(0),
@@ -162,6 +164,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
         /** Create wallet frame and make it the central widget */
         walletFrame = new WalletFrame(_platformStyle, this);
         setCentralWidget(walletFrame);
+        explorerWindow = new BlockExplorer(this);
     } else
 #endif // ENABLE_WALLET
     {
@@ -377,6 +380,9 @@ void BitcoinGUI::createActions()
     openAction = new QAction(platformStyle->TextColorIcon(":/icons/open"), tr("Open &URI..."), this);
     openAction->setStatusTip(tr("Open a datacoin: URI or payment request"));
 
+    openBlockExplorerAction = new QAction(platformStyle->TextColorIcon(":/icons/explorer"), tr("&Blockchain"), this);
+    openBlockExplorerAction->setStatusTip(tr("Block explorer window"));
+
     showHelpMessageAction = new QAction(platformStyle->TextColorIcon(":/icons/info"), tr("&Command-line options"), this);
     showHelpMessageAction->setMenuRole(QAction::NoRole);
     showHelpMessageAction->setStatusTip(tr("Show the %1 help message to get a list with possible Datacoin command-line options").arg(tr(PACKAGE_NAME)));
@@ -388,8 +394,10 @@ void BitcoinGUI::createActions()
     connect(toggleHideAction, SIGNAL(triggered()), this, SLOT(toggleHidden()));
     connect(showHelpMessageAction, SIGNAL(triggered()), this, SLOT(showHelpMessageClicked()));
     connect(openRPCConsoleAction, SIGNAL(triggered()), this, SLOT(showDebugWindow()));
+    connect(openBlockExplorerAction, SIGNAL(triggered()), explorerWindow, SLOT(show()));
     // prevents an open debug window from becoming stuck/unusable on client shutdown
     connect(quitAction, SIGNAL(triggered()), rpcConsole, SLOT(hide()));
+    connect(quitAction, SIGNAL(triggered()), explorerWindow, SLOT(hide()));
 
 #ifdef ENABLE_WALLET
     if(walletFrame)
@@ -447,6 +455,7 @@ void BitcoinGUI::createMenuBar()
     if(walletFrame)
     {
         help->addAction(openRPCConsoleAction);
+        help->addAction(openBlockExplorerAction);
     }
     help->addAction(showHelpMessageAction);
     help->addSeparator();
@@ -573,6 +582,7 @@ void BitcoinGUI::setWalletActionsEnabled(bool enabled)
     usedSendingAddressesAction->setEnabled(enabled);
     usedReceivingAddressesAction->setEnabled(enabled);
     openAction->setEnabled(enabled);
+    openBlockExplorerAction->setEnabled(enabled);
 }
 
 void BitcoinGUI::createTrayIcon(const NetworkStyle *networkStyle)
@@ -618,6 +628,7 @@ void BitcoinGUI::createTrayIconMenu()
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(optionsAction);
     trayIconMenu->addAction(openRPCConsoleAction);
+    trayIconMenu->addAction(openBlockExplorerAction);
 #ifndef Q_OS_MAC // This is built-in on Mac
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(quitAction);
@@ -715,6 +726,11 @@ void BitcoinGUI::gotoSignMessageTab(QString addr)
 void BitcoinGUI::gotoVerifyMessageTab(QString addr)
 {
     if (walletFrame) walletFrame->gotoVerifyMessageTab(addr);
+}
+
+void BitcoinGUI::gotoBlockExplorerPage()
+{
+    if (walletFrame) walletFrame->gotoBlockExplorerPage();
 }
 #endif // ENABLE_WALLET
 

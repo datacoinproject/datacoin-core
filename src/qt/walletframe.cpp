@@ -203,3 +203,10 @@ void WalletFrame::outOfSyncWarningClicked()
 {
     Q_EMIT requestedSyncWarningInfo();
 }
+
+void WalletFrame::gotoBlockExplorerPage()
+{
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->gotoBlockExplorerPage();
+}

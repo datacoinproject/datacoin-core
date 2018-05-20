@@ -24,6 +24,7 @@
         <file alias="receiving_addresses">res/icons/receive.png</file>
         <file alias="editpaste">res/icons/editpaste.png</file>
         <file alias="editcopy">res/icons/editcopy.png</file>
+        <file alias="explorer">res/icons/explorer.png</file>
         <file alias="add">res/icons/add.png</file>
         <file alias="edit">res/icons/edit.png</file>
         <file alias="history">res/icons/history.png</file>
@@ -48,7 +49,8 @@
         <file alias="warning">res/icons/warning.png</file>
         <file alias="fontbigger">res/icons/fontbigger.png</file>
         <file alias="fontsmaller">res/icons/fontsmaller.png</file>
-        <file alias="prompticon">res/icons/chevron.png</file>
+        <file alias="chevron">res/icons/chevron.png</file>
+        <file alias="norvehc">res/icons/norvehc.png</file>
         <file alias="transaction_abandoned">res/icons/transaction_abandoned.png</file>
         <file alias="hd_enabled">res/icons/hd_enabled.png</file>
         <file alias="hd_disabled">res/icons/hd_disabled.png</file>
